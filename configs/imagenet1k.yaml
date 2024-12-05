@@ -1,0 +1,62 @@
+# @package _global_
+output_dir: "./experiments/reskagnet50_imagenet/"
+logging_dir: "./experiments/reskagnet50_imagenet/train_logs/"
+model_name: "reskagnet50_imagenet"
+gradient_accumulation_steps: 8
+mixed_precision: 'no'
+epochs: 200
+train_batch_size: 14
+val_batch_size: 14
+dataloader_num_workers: 22
+seed: 42
+
+use_torch_compile: false
+unpack_data: true
+
+tracking_metric: 'accuracy'
+
+max_train_steps: none
+
+max_grad_norm: 2.
+
+checkpointing_steps: 5000
+checkpoints_total_limit: 1000
+find_unused_parameters: false
+
+metrics:
+  report_type: 'classification'
+
+model:
+  groups: 1
+  degree: 5
+  width_scale: 2
+  dropout: 0.15
+  dropout_linear: 0.25
+  l1_decay: 0
+  l2_activation_penalty: 0
+  l1_activation_penalty: 0
+  num_classes: 1000
+  is_moe: false
+
+optim:
+  type: 'adamW'
+  learning_rate: 9e-4
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_weight_decay: 5e-6
+  adam_epsilon: 1e-8
+  lr_warmup_steps: 7500
+  lr_power: 0.3
+  lr_end: 1e-7
+  set_grads_to_none: false
+  use_triton: true
+
+wandb:
+  entity: 'add your entity'
+  project_name: 'imagenet1k-reskagnet50'
+
+loss:
+  label_smoothing: 0.05
+
+visualization:
+  layers: [0, 2, 5, 7, 10, 13]
