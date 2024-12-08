@@ -1,0 +1,9 @@
+torch
+torchvision
+tqdm
+scikit-learn
+pillow
+torchinfo
+torchmetrics
+einops
+matplotlib
