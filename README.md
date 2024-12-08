@@ -1,3 +1,6 @@
+> [!NOTE]
+> This project is forked from [IvanDrokin/torch-conv-kan](https://github.com/IvanDrokin/torch-conv-kan)
+
 [![arXiv](https://img.shields.io/badge/arXiv-2407.01092-b31b1b.svg)](https://arxiv.org/abs/2407.01092)
 
 # TorchConv KAN: A Convolutional Kolmogorov-Arnold Networks Collection
