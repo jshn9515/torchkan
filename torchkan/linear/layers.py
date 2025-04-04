@@ -26,7 +26,6 @@ from typing import Callable, Literal
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from einops import einsum
 from torch import Tensor
 
 from .utils import RadialBasisFunction
@@ -335,11 +334,7 @@ class GRAMLayer(nn.Module):
         x = torch.tanh(x).contiguous()
         grams_basis = self.base_activation(self.gram_poly(x, self.degrees))
 
-        y = einsum(
-            grams_basis,
-            self.grams_basis_weights,
-            'b l d, l o d -> b o',
-        )
+        y = torch.einsum('bid,iod->bo', grams_basis, self.grams_basis_weights)
 
         y = self.base_activation(self.norm(y + basis))
         y = y.view(-1, self.out_features)
@@ -724,11 +719,7 @@ class BottleNeckGRAMLayer(nn.Module):
         x = torch.tanh(x).contiguous()
         grams_basis = self.base_activation(self.gram_poly(x, self.degrees))
 
-        y = einsum(
-            grams_basis,
-            self.grams_basis_weights,
-            'b l d, l o d -> b o',
-        )
+        y = torch.einsum('bid,iod->bo', grams_basis, self.grams_basis_weights)
 
         y = self.outer_proj(y)
         y = self.base_activation(self.norm(y + basis))
