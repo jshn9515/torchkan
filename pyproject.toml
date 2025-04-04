@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=72", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["torchkan"]
+
+[project]
+name = "torchkan"
+version = "0.1.0a1"
+description = "Kolmogorov–Arnold Networks (KAN) module for PyTorch"
+authors = [{name = "Ivan Drokin"}]
+maintainers = [{name = "jshn9515", email = "jshn9510@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = [
+    "computer-vision",
+    "convolutional-neural-networks",
+    "kolmogorov-arnold-networks"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = [
+    "numpy>=2.0.0",
+    "matplotlib>=3.10.0",
+    "torch>=1.5.0",
+    "torchvision>=0.20.0",
+    "scikit-learn>=1.5.0",
+]
