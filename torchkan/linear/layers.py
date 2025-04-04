@@ -490,9 +490,7 @@ class JacobiKANLayer(nn.Module):
         nn.init.xavier_uniform_(self.base_weights)
 
     def forward(self, x: Tensor) -> Tensor:
-        x = torch.reshape(
-            x, (-1, self.in_features)
-        )  # shape = (batch_size, in_features)
+        x = x.reshape(-1, self.in_features)  # shape = (batch_size, in_features)
 
         basis = F.linear(self.base_activation(x), self.base_weights)
 
@@ -698,18 +696,18 @@ class BottleNeckGRAMLayer(nn.Module):
 
     @lru_cache(maxsize=128)
     def gram_poly(self, x: Tensor, degree: int) -> Tensor:
-        p0 = x.new_ones(x.size())
+        P0 = x.new_ones(x.size())
 
         if degree == 0:
-            return p0.unsqueeze(-1)
+            return torch.unsqueeze(P0, dim=-1)
 
-        p1 = x
-        grams_basis = [p0, p1]
+        P1 = x
+        grams_basis = [P0, P1]
 
         for i in range(2, degree + 1):
-            p2 = x * p1 - self.beta(i - 1, i) * p0
-            grams_basis.append(p2)
-            p0, p1 = p1, p2
+            P2 = x * P1 - self.beta(i - 1, i) * P0
+            grams_basis.append(P2)
+            P0, P1 = P1, P2
 
         return torch.stack(grams_basis, dim=-1)
 
