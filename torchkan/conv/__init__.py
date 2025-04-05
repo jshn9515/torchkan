@@ -1,5 +1,5 @@
 # ruff: noqa: I001
-from .fast_kan_conv import (
+from .fastkan_conv import (
     FastKANConv1DLayer as FastKANConv1DLayer,
     FastKANConv2DLayer as FastKANConv2DLayer,
     FastKANConv3DLayer as FastKANConv3DLayer,
@@ -44,7 +44,7 @@ from .relukan_conv import (
     ReLUKANConv2DLayer as ReLUKANConv2DLayer,
     ReLUKANConv3DLayer as ReLUKANConv3DLayer,
 )
-from .wav_kan import (
+from .wavkan_conv import (
     WavKANConv1DLayer as WavKANConv1DLayer,
     WavKANConv2DLayer as WavKANConv2DLayer,
     WavKANConv3DLayer as WavKANConv3DLayer,
