@@ -124,6 +124,14 @@ y = model(x)
 assert y.shape == (1, 10)
 ```
 
+You can use `get_all_kan_layers` function to list all the KAN layers in this module:
+
+```python
+import torchkan
+
+layers = torchkan.get_all_kan_layers()
+```
+
 ## Cite this Project
 
 If you use this project in your research or wish to refer to the baseline results, please use the following BibTeX entry.
