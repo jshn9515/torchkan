@@ -1,4 +1,39 @@
 # ruff: noqa: I001
+from .attention_conv import (
+    BottleNeckKAGNFocalModulation1D as BottleNeckKAGNFocalModulation1D,
+    BottleNeckKAGNFocalModulation2D as BottleNeckKAGNFocalModulation2D,
+    BottleNeckKAGNFocalModulation3D as BottleNeckKAGNFocalModulation3D,
+)
+from .attention_conv import (
+    BottleNeckSelfKAGNtention1D as BottleNeckSelfKAGNtention1D,
+    BottleNeckSelfKAGNtention2D as BottleNeckSelfKAGNtention2D,
+    BottleNeckSelfKAGNtention3D as BottleNeckSelfKAGNtention3D,
+)
+from .attention_conv import (
+    BottleNeckSelfReLUKANtention1D as BottleNeckSelfReLUKANtention1D,
+    BottleNeckSelfReLUKANtention2D as BottleNeckSelfReLUKANtention2D,
+    BottleNeckSelfReLUKANtention3D as BottleNeckSelfReLUKANtention3D,
+)
+from .attention_conv import (
+    SelfKAGNtention1D as SelfKAGNtention1D,
+    SelfKAGNtention2D as SelfKAGNtention2D,
+    SelfKAGNtention3D as SelfKAGNtention3D,
+)
+from .attention_conv import (
+    SelfReLUKANtention1D as SelfReLUKANtention1D,
+    SelfReLUKANtention2D as SelfReLUKANtention2D,
+    SelfReLUKANtention3D as SelfReLUKANtention3D,
+)
+from .attention_conv import (
+    KAGNFocalModulation1D as KAGNFocalModulation1D,
+    KAGNFocalModulation2D as KAGNFocalModulation2D,
+    KAGNFocalModulation3D as KAGNFocalModulation3D,
+)
+from .attention_conv import (
+    RoPEBottleNeckSelfKAGNtention1D as RoPEBottleNeckSelfKAGNtention1D,
+    RoPEBottleNeckSelfKAGNtention2D as RoPEBottleNeckSelfKAGNtention2D,
+    RoPEBottleNeckSelfKAGNtention3D as RoPEBottleNeckSelfKAGNtention3D,
+)
 from .fastkan_conv import (
     FastKANConv1DLayer as FastKANConv1DLayer,
     FastKANConv2DLayer as FastKANConv2DLayer,
@@ -48,6 +83,41 @@ from .kan_conv import (
     KANConv1DLayer as KANConv1DLayer,
     KANConv2DLayer as KANConv2DLayer,
     KANConv3DLayer as KANConv3DLayer,
+)
+from .moe_kan import (
+    MoEFastKANConv1DLayer as MoEFastKANConv1DLayer,
+    MoEFastKANConv2DLayer as MoEFastKANConv2DLayer,
+    MoEFastKANConv3DLayer as MoEFastKANConv3DLayer,
+)
+from .moe_kan import (
+    MoEFullBottleneckKAGNConv1DLayer as MoEFullBottleneckKAGNConv1DLayer,
+    MoEFullBottleneckKAGNConv2DLayer as MoEFullBottleneckKAGNConv2DLayer,
+    MoEFullBottleneckKAGNConv3DLayer as MoEFullBottleneckKAGNConv3DLayer,
+)
+from .moe_kan import (
+    MoEKACNConv1DLayer as MoEKACNConv1DLayer,
+    MoEKACNConv2DLayer as MoEKACNConv2DLayer,
+    MoEKACNConv3DLayer as MoEKACNConv3DLayer,
+)
+from .moe_kan import (
+    MoEKAGNConv1DLayer as MoEKAGNConv1DLayer,
+    MoEKAGNConv2DLayer as MoEKAGNConv2DLayer,
+    MoEKAGNConv3DLayer as MoEKAGNConv3DLayer,
+)
+from .moe_kan import (
+    MoEKALNConv1DLayer as MoEKALNConv1DLayer,
+    MoEKALNConv2DLayer as MoEKALNConv2DLayer,
+    MoEKALNConv3DLayer as MoEKALNConv3DLayer,
+)
+from .moe_kan import (
+    MoEKANConv1DLayer as MoEKANConv1DLayer,
+    MoEKANConv2DLayer as MoEKANConv2DLayer,
+    MoEKANConv3DLayer as MoEKANConv3DLayer,
+)
+from .moe_kan import (
+    MoEWavKANConv1DLayer as MoEWavKANConv1DLayer,
+    MoEWavKANConv2DLayer as MoEWavKANConv2DLayer,
+    MoEWavKANConv3DLayer as MoEWavKANConv3DLayer,
 )
 from .relukan_bottleneck_conv import (
     BottleNeckReLUKANConv1DLayer as BottleNeckReLUKANConv1DLayer,
