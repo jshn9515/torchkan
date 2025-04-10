@@ -36,7 +36,7 @@ class ReLUConvNDLayer(nn.Module):
         self.out_channels = out_channels
         self.g = g
         self.k = k
-        self.r = 4 * g * g / ((k + 1) * (k + 1))
+        self.r = 4 * g**2 / (k + 1) ** 2
         self.train_ab = train_ab
         self.kernel_size = kernel_size
         self.padding = padding
@@ -48,6 +48,7 @@ class ReLUConvNDLayer(nn.Module):
         self.ndim = ndim
         self.dropout = None
         self.norm_kwargs = norm_kwargs
+
         if dropout > 0:
             if ndim == 1:
                 self.dropout = nn.Dropout1d(p=dropout)
