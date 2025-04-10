@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "torchkan"
-version = "0.1.0a1"
+version = "0.1.0a2"
 description = "Kolmogorov–Arnold Networks (KAN) module for PyTorch"
 authors = [{name = "Ivan Drokin"}]
 maintainers = [{name = "jshn9515", email = "jshn9510@gmail.com"}]
