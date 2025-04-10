@@ -7,6 +7,9 @@ from torchkan.conv import (
     BottleNeckKAGNConv1DLayer,
     BottleNeckKAGNConv2DLayer,
     BottleNeckKAGNConv3DLayer,
+    BottleNeckReLUKANConv1DLayer,
+    BottleNeckReLUKANConv2DLayer,
+    BottleNeckReLUKANConv3DLayer,
     MoEBottleNeckKAGNConv1DLayer,
     MoEBottleNeckKAGNConv2DLayer,
     MoEBottleNeckKAGNConv3DLayer,
@@ -23,7 +26,7 @@ def test_kagn_conv_1d(dropout, groups):
     padding = 'same'
 
     input_tensor = torch.rand(batch_size, in_channels, spatial_dim)
-    conv = BottleNeckKAGNConv1DLayer(
+    net = BottleNeckKAGNConv1DLayer(
         in_channels=in_channels,
         out_channels=out_channels,
         kernel_size=kernel_size,
@@ -34,7 +37,7 @@ def test_kagn_conv_1d(dropout, groups):
         dropout=dropout,
         degree=3,
     )
-    out = conv(input_tensor)
+    out = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim)
 
 
@@ -48,7 +51,7 @@ def test_kagn_conv_2d(dropout, groups):
     padding = 'same'
 
     input_tensor = torch.rand(batch_size, in_channels, spatial_dim, spatial_dim)
-    conv = BottleNeckKAGNConv2DLayer(
+    net = BottleNeckKAGNConv2DLayer(
         in_channels=in_channels,
         out_channels=out_channels,
         kernel_size=kernel_size,
@@ -59,7 +62,7 @@ def test_kagn_conv_2d(dropout, groups):
         dropout=dropout,
         degree=3,
     )
-    out = conv(input_tensor)
+    out = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim, spatial_dim)
 
 
@@ -72,8 +75,10 @@ def test_kagn_conv_3d(dropout, groups):
     kernel_size = 3
     padding = 'same'
 
-    input_tensor = torch.rand(batch_size, in_channels, spatial_dim, spatial_dim, spatial_dim)
-    conv = BottleNeckKAGNConv3DLayer(
+    input_tensor = torch.rand(
+        batch_size, in_channels, spatial_dim, spatial_dim, spatial_dim
+    )
+    net = BottleNeckKAGNConv3DLayer(
         in_channels=in_channels,
         out_channels=out_channels,
         kernel_size=kernel_size,
@@ -84,8 +89,14 @@ def test_kagn_conv_3d(dropout, groups):
         dropout=dropout,
         degree=3,
     )
-    out = conv(input_tensor)
-    assert out.shape == (batch_size, out_channels, spatial_dim, spatial_dim, spatial_dim)
+    out = net(input_tensor)
+    assert out.shape == (
+        batch_size,
+        out_channels,
+        spatial_dim,
+        spatial_dim,
+        spatial_dim,
+    )
 
 
 @pytest.mark.parametrize('dropout, groups', itertools.product([0.0, 0.5], [1, 4]))
@@ -98,7 +109,7 @@ def test_moe_kagn_conv_1d(dropout, groups):
     padding = 'same'
 
     input_tensor = torch.rand(batch_size, in_channels, spatial_dim)
-    conv = MoEBottleNeckKAGNConv1DLayer(
+    net = MoEBottleNeckKAGNConv1DLayer(
         in_channels=in_channels,
         out_channels=out_channels,
         kernel_size=kernel_size,
@@ -109,7 +120,7 @@ def test_moe_kagn_conv_1d(dropout, groups):
         dropout=dropout,
         degree=3,
     )
-    out, _ = conv(input_tensor)
+    out, _ = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim)
 
 
@@ -125,7 +136,7 @@ def test_moe_kagn_conv_2d(dropout, groups, pregate):
     padding = 'same'
 
     input_tensor = torch.rand(batch_size, in_channels, spatial_dim, spatial_dim)
-    conv = MoEBottleNeckKAGNConv2DLayer(
+    net = MoEBottleNeckKAGNConv2DLayer(
         in_channels=in_channels,
         out_channels=out_channels,
         kernel_size=kernel_size,
@@ -137,7 +148,7 @@ def test_moe_kagn_conv_2d(dropout, groups, pregate):
         degree=3,
         pregate=pregate,
     )
-    out, _ = conv(input_tensor)
+    out, _ = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim, spatial_dim)
 
 
@@ -150,8 +161,10 @@ def test_moe_kagn_conv_3d(dropout, groups):
     kernel_size = 3
     padding = 'same'
 
-    input_tensor = torch.rand(batch_size, in_channels, spatial_dim, spatial_dim, spatial_dim)
-    conv = MoEBottleNeckKAGNConv3DLayer(
+    input_tensor = torch.rand(
+        batch_size, in_channels, spatial_dim, spatial_dim, spatial_dim
+    )
+    net = MoEBottleNeckKAGNConv3DLayer(
         in_channels=in_channels,
         out_channels=out_channels,
         kernel_size=kernel_size,
@@ -162,5 +175,100 @@ def test_moe_kagn_conv_3d(dropout, groups):
         dropout=dropout,
         degree=3,
     )
-    out, _ = conv(input_tensor)
-    assert out.shape == (batch_size, out_channels, spatial_dim, spatial_dim, spatial_dim)
+    out, _ = net(input_tensor)
+    assert out.shape == (
+        batch_size,
+        out_channels,
+        spatial_dim,
+        spatial_dim,
+        spatial_dim,
+    )
+
+
+@pytest.mark.parametrize('dropout, groups', itertools.product([0.0, 0.5], [1, 4]))
+def test_bottleneck_relukan_conv_1d(dropout: float, groups: int):
+    batch_size = 6
+    in_channels = 4
+    out_channels = 16
+    spatial_dim = 32
+    kernel_size = 3
+    padding = 'same'
+
+    input_tensor = torch.rand(batch_size, in_channels, spatial_dim)
+    net = BottleNeckReLUKANConv1DLayer(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        kernel_size=kernel_size,
+        stride=1,
+        padding=padding,
+        dilation=1,
+        groups=groups,
+        g=5,
+        k=3,
+        train_ab=True,
+        dropout=dropout,
+    )
+    out = net(input_tensor)
+    assert out.shape == (batch_size, out_channels, spatial_dim)
+
+
+@pytest.mark.parametrize('dropout, groups', itertools.product([0.0, 0.5], [1, 4]))
+def test_bottleneck_relukan_conv_2d(dropout: float, groups: int):
+    batch_size = 6
+    in_channels = 4
+    out_channels = 16
+    spatial_dim = 32
+    kernel_size = 3
+    padding = 'same'
+
+    input_tensor = torch.rand(batch_size, in_channels, spatial_dim, spatial_dim)
+    net = BottleNeckReLUKANConv2DLayer(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        kernel_size=kernel_size,
+        stride=1,
+        padding=padding,
+        dilation=1,
+        groups=groups,
+        g=5,
+        k=3,
+        train_ab=True,
+        dropout=dropout,
+    )
+    out = net(input_tensor)
+    assert out.shape == (batch_size, out_channels, spatial_dim, spatial_dim)
+
+
+@pytest.mark.parametrize('dropout, groups', itertools.product([0.0, 0.5], [1, 4]))
+def test_bottleneck_relukan_conv_3d(dropout: float, groups: int):
+    batch_size = 6
+    in_channels = 4
+    out_channels = 16
+    spatial_dim = 32
+    kernel_size = 3
+    padding = 'same'
+
+    input_tensor = torch.rand(
+        batch_size, in_channels, spatial_dim, spatial_dim, spatial_dim
+    )
+    net = BottleNeckReLUKANConv3DLayer(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        kernel_size=kernel_size,
+        stride=1,
+        padding=padding,
+        dilation=1,
+        groups=groups,
+        g=5,
+        k=3,
+        train_ab=True,
+        dropout=dropout,
+    )
+    out = net(input_tensor)
+    assert out.shape == (
+        batch_size,
+        out_channels,
+        spatial_dim,
+        spatial_dim,
+        spatial_dim,
+    )
