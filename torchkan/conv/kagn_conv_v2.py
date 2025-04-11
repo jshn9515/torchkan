@@ -10,7 +10,7 @@ from torch.nn.functional import conv1d, conv2d, conv3d
 
 PaddingType = Literal['valid', 'same']
 
- 
+
 class KAGNConvNDLayerV2(nn.Module):
     def __init__(
         self,
@@ -83,7 +83,9 @@ class KAGNConvNDLayerV2(nn.Module):
         )
 
         self.layer_norm = norm_class(out_channels, **norm_kwargs)
-        self.beta_weights = nn.Parameter(torch.zeros(spline_order + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(
+            torch.zeros(spline_order + 1, dtype=torch.float32)
+        )
 
         # Initialize weights using Kaiming uniform distribution for better training start
         # for conv_layer in self.base_conv:
@@ -129,7 +131,9 @@ class KAGNConvNDLayerV2(nn.Module):
             P0, P1 = P1, P2
 
         indexes = [
-            i * (spline_order + 1) + j for i in range(x.shape[1]) for j in range(spline_order + 1)
+            i * (spline_order + 1) + j
+            for i in range(x.shape[1])
+            for j in range(spline_order + 1)
         ]
 
         grams_basis = torch.concat(grams_basis, dim=1)

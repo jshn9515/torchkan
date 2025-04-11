@@ -125,7 +125,9 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         )
 
         self.poly_weights = nn.Parameter(torch.randn(poly_shape))
-        self.beta_weights = nn.Parameter(torch.zeros(spline_order + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(
+            torch.zeros(spline_order + 1, dtype=torch.float32)
+        )
 
         # Initialize weights using Kaiming uniform distribution for better training start
         for conv_layer in self.base_conv:
@@ -365,7 +367,9 @@ class KAGNExpert(nn.Module):
         )
 
         self.poly_weights = nn.Parameter(torch.randn(poly_shape))
-        self.beta_weights = nn.Parameter(torch.zeros(spline_order + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(
+            torch.zeros(spline_order + 1, dtype=torch.float32)
+        )
 
         nn.init.kaiming_uniform_(self.poly_weights, nonlinearity='linear')
         nn.init.normal_(
@@ -481,7 +485,9 @@ class KAGNMoE(nn.Module):
 
         self.pre_gate = None
         if pregate:
-            self.pre_gate = GRAMLayer(in_channels, out_channels, spline_order=spline_order)
+            self.pre_gate = GRAMLayer(
+                in_channels, out_channels, spline_order=spline_order
+            )
 
         self.softplus = nn.Softplus()
         self.softmax = nn.Softmax(1)

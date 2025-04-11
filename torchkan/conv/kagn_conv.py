@@ -86,7 +86,9 @@ class KAGNConvNDLayer(nn.Module):
         )
 
         self.poly_weights = nn.Parameter(torch.randn(poly_shape))
-        self.beta_weights = nn.Parameter(torch.zeros(spline_order + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(
+            torch.zeros(spline_order + 1, dtype=torch.float32)
+        )
 
         # Initialize weights using Kaiming uniform distribution for better training start
         for conv_layer in self.base_conv:

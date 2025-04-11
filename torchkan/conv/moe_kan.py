@@ -180,7 +180,9 @@ class MoEKANConvBase(nn.Module):
             load = self._gates_to_load(gates)
         return gates, load
 
-    def forward(self, x: Tensor, train: bool, loss_coef: float = 1e-2) -> tuple[Tensor, Tensor]:
+    def forward(
+        self, x: Tensor, train: bool, loss_coef: float = 1e-2
+    ) -> tuple[Tensor, Tensor]:
         gate_x = torch.flatten(self.avgpool(x), 1)
         gates, load = self.noisy_top_k_gating(gate_x, train)
         # calculate importance loss

@@ -125,7 +125,9 @@ class KALNConvNDLayer(nn.Module):
             x_normalized = self.dropout(x_normalized)
 
         # Compute Legendre polynomials for the normalized x
-        legendre_basis = self.compute_legendre_polynomials(x_normalized, self.spline_order)
+        legendre_basis = self.compute_legendre_polynomials(
+            x_normalized, self.spline_order
+        )
         # Reshape legendre_basis to match the expected input dimensions for linear transformation
         # Compute polynomial output using polynomial weights
         poly_output = self.conv_w_fun(
