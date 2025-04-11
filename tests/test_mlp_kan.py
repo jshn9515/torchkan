@@ -111,7 +111,7 @@ def test_kaln(dropout: float, first_dropout: bool, l1_decay: float):
     batch_size = 6
     input_dim = 32
     hidden_dim = 64
-    degree = 3
+    spline_order = 3
     num_classes = 128
 
     input_tensor = torch.rand(batch_size, input_dim)
@@ -120,7 +120,7 @@ def test_kaln(dropout: float, first_dropout: bool, l1_decay: float):
     net = KALN(
         hidden_layers,
         base_activation=nn.GELU(),
-        degree=degree,
+        spline_order=spline_order,
         dropout=dropout,
         l1_decay=l1_decay,
         first_dropout=first_dropout,
@@ -137,7 +137,7 @@ def test_kajn(dropout: float, first_dropout: bool, l1_decay: float):
     batch_size = 6
     input_dim = 32
     hidden_dim = 64
-    degree = 3
+    spline_order = 3
     num_classes = 128
 
     input_tensor = torch.rand(batch_size, input_dim)
@@ -146,7 +146,7 @@ def test_kajn(dropout: float, first_dropout: bool, l1_decay: float):
     net = KAJN(
         hidden_layers,
         base_activation=nn.GELU(),
-        degree=degree,
+        spline_order=spline_order,
         dropout=dropout,
         l1_decay=l1_decay,
         first_dropout=first_dropout,
@@ -163,7 +163,7 @@ def test_kagn(dropout: float, first_dropout: bool, l1_decay: float):
     batch_size = 6
     input_dim = 32
     hidden_dim = 64
-    degree = 3
+    spline_order = 3
     num_classes = 128
 
     input_tensor = torch.rand(batch_size, input_dim)
@@ -172,7 +172,7 @@ def test_kagn(dropout: float, first_dropout: bool, l1_decay: float):
     net = KAGN(
         hidden_layers,
         base_activation=nn.GELU(),
-        degree=degree,
+        spline_order=spline_order,
         dropout=dropout,
         l1_decay=l1_decay,
         first_dropout=first_dropout,
@@ -197,7 +197,7 @@ def test_bn_kagn(
     batch_size = 6
     input_dim = 32
     hidden_dim = 64
-    degree = 3
+    spline_order = 3
     num_classes = 128
 
     input_tensor = torch.rand(batch_size, input_dim)
@@ -206,7 +206,7 @@ def test_bn_kagn(
     net = BottleNeckKAGN(
         hidden_layers,
         base_activation=nn.SiLU(),
-        degree=degree,
+        spline_order=spline_order,
         dropout=dropout,
         l1_decay=l1_decay,
         first_dropout=first_dropout,
@@ -225,7 +225,7 @@ def test_kacn(dropout: float, first_dropout: bool, l1_decay: float):
     batch_size = 6
     input_dim = 32
     hidden_dim = 64
-    degree = 3
+    spline_order = 3
     num_classes = 128
 
     input_tensor = torch.rand(batch_size, input_dim)
@@ -233,7 +233,7 @@ def test_kacn(dropout: float, first_dropout: bool, l1_decay: float):
 
     net = KACN(
         hidden_layers,
-        degree=degree,
+        spline_order=spline_order,
         dropout=dropout,
         l1_decay=l1_decay,
         first_dropout=first_dropout,
@@ -250,7 +250,7 @@ def test_kabn(dropout: float, first_dropout: bool, l1_decay: float):
     batch_size = 6
     input_dim = 32
     hidden_dim = 64
-    degree = 3
+    spline_order = 3
     num_classes = 128
 
     input_tensor = torch.rand(batch_size, input_dim)
@@ -258,7 +258,7 @@ def test_kabn(dropout: float, first_dropout: bool, l1_decay: float):
 
     net = KABN(
         hidden_layers,
-        degree=degree,
+        spline_order=spline_order,
         dropout=dropout,
         l1_decay=l1_decay,
         first_dropout=first_dropout,

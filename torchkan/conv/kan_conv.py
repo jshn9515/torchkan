@@ -15,7 +15,7 @@ class KANConvNDLayer(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -30,7 +30,7 @@ class KANConvNDLayer(nn.Module):
         super(KANConvNDLayer, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.degree = degree
+        self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.padding = padding
         self.stride = stride
@@ -71,7 +71,7 @@ class KANConvNDLayer(nn.Module):
         self.base_conv = nn.ModuleList([base_conv] * groups)
 
         spline_conv = conv_class(
-            in_channels=(grid_size + degree) * in_channels // groups,
+            in_channels=(grid_size + spline_order) * in_channels // groups,
             out_channels=out_channels // groups,
             kernel_size=kernel_size,
             stride=stride,
@@ -89,9 +89,9 @@ class KANConvNDLayer(nn.Module):
 
         h = (self.grid_range[1] - self.grid_range[0]) / grid_size
         self.grid = torch.linspace(
-            self.grid_range[0] - h * degree,
-            self.grid_range[1] + h * degree,
-            grid_size + 2 * degree + 1,
+            self.grid_range[0] - h * spline_order,
+            self.grid_range[1] + h * spline_order,
+            grid_size + 2 * spline_order + 1,
             dtype=torch.float32,
         )
         # Initialize weights using Kaiming uniform distribution for better training start
@@ -119,7 +119,7 @@ class KANConvNDLayer(nn.Module):
         bases = bases.to(x.dtype)
 
         # Compute the spline basis over multiple orders.
-        for k in range(1, self.degree + 1):
+        for k in range(1, self.spline_order + 1):
             left_intervals = grid[..., : -(k + 1)]
             right_intervals = grid[..., k:-1]
             delta = torch.where(
@@ -164,7 +164,7 @@ class KANConv3DLayer(KANConvNDLayer):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         grid_size: int = 5,
         grid_range: tuple[float, float] = (-1.0, 1.0),
         base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
@@ -177,7 +177,7 @@ class KANConv3DLayer(KANConvNDLayer):
             ndim=3,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -201,7 +201,7 @@ class KANConv2DLayer(KANConvNDLayer):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         grid_size: int = 5,
         grid_range: tuple[float, float] = (-1.0, 1.0),
         base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
@@ -214,7 +214,7 @@ class KANConv2DLayer(KANConvNDLayer):
             ndim=2,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -238,7 +238,7 @@ class KANConv1DLayer(KANConvNDLayer):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         grid_size: int = 5,
         grid_range: tuple[float, float] = (-1.0, 1.0),
         base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
@@ -251,7 +251,7 @@ class KANConv1DLayer(KANConvNDLayer):
             ndim=1,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,

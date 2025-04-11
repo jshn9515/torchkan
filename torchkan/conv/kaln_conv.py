@@ -18,7 +18,7 @@ class KALNConvNDLayer(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -31,7 +31,7 @@ class KALNConvNDLayer(nn.Module):
         super(KALNConvNDLayer, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.degree = degree
+        self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.padding = padding
         self.stride = stride
@@ -79,7 +79,7 @@ class KALNConvNDLayer(nn.Module):
         poly_shape = (
             groups,
             out_channels // groups,
-            (in_channels // groups) * (degree + 1),
+            (in_channels // groups) * (spline_order + 1),
             *kernel_size,
         )
 
@@ -125,7 +125,7 @@ class KALNConvNDLayer(nn.Module):
             x_normalized = self.dropout(x_normalized)
 
         # Compute Legendre polynomials for the normalized x
-        legendre_basis = self.compute_legendre_polynomials(x_normalized, self.degree)
+        legendre_basis = self.compute_legendre_polynomials(x_normalized, self.spline_order)
         # Reshape legendre_basis to match the expected input dimensions for linear transformation
         # Compute polynomial output using polynomial weights
         poly_output = self.conv_w_fun(
@@ -170,7 +170,7 @@ class KALNConv3DLayer(KALNConvNDLayer):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -181,7 +181,7 @@ class KALNConv3DLayer(KALNConvNDLayer):
             ndim=3,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -202,7 +202,7 @@ class KALNConv2DLayer(KALNConvNDLayer):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -213,7 +213,7 @@ class KALNConv2DLayer(KALNConvNDLayer):
             ndim=2,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -234,7 +234,7 @@ class KALNConv1DLayer(KALNConvNDLayer):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -245,7 +245,7 @@ class KALNConv1DLayer(KALNConvNDLayer):
             ndim=1,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,

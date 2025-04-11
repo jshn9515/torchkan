@@ -57,7 +57,7 @@ def test_kan_conv_1d(dropout: float, groups: int):
         padding=padding,
         dilation=1,
         groups=groups,
-        degree=3,
+        spline_order=3,
         grid_size=5,
         grid_range=(-1, 1),
         base_activation=nn.GELU(),
@@ -85,7 +85,7 @@ def test_kan_conv_2d(dropout: float, groups: int):
         padding=padding,
         dilation=1,
         groups=groups,
-        degree=3,
+        spline_order=3,
         grid_size=5,
         grid_range=(-1, 1),
         base_activation=nn.GELU(),
@@ -115,7 +115,7 @@ def test_kan_conv_3d(dropout: float, groups: int):
         padding=padding,
         dilation=1,
         groups=groups,
-        degree=3,
+        spline_order=3,
         grid_size=5,
         grid_range=(-1, 1),
         base_activation=nn.GELU(),
@@ -368,7 +368,7 @@ def test_kalgcn_conv_1d(dropout: float, groups: int, conv_class: nn.Module):
         padding=padding,
         dilation=1,
         groups=groups,
-        degree=3,
+        spline_order=3,
         dropout=dropout,
     )
     out = net(input_tensor)
@@ -407,7 +407,7 @@ def test_kalgcn_conv_2d(dropout: float, groups: int, conv_class: nn.Module):
         padding=padding,
         dilation=1,
         groups=groups,
-        degree=3,
+        spline_order=3,
         dropout=dropout,
     )
     out = net(input_tensor)
@@ -448,7 +448,7 @@ def test_kalgcn_conv_3d(dropout: float, groups: int, conv_class: nn.Module):
         padding=padding,
         dilation=1,
         groups=groups,
-        degree=3,
+        spline_order=3,
         dropout=dropout,
     )
     out = net(input_tensor)

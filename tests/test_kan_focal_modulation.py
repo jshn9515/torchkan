@@ -29,7 +29,7 @@ def test_sa_bn_kagn_conv_1d(dropout: float):
         use_postln_in_modulation=use_postln_in_modulation,
         normalize_modulator=normalize_modulator,
         full_kan=full_kan,
-        degree=3,
+        spline_order=3,
         dropout=dropout,
     )
     out = net(input_tensor)
@@ -57,7 +57,7 @@ def test_sa_bn_kagn_conv_2d(dropout: float):
         use_postln_in_modulation=use_postln_in_modulation,
         normalize_modulator=normalize_modulator,
         full_kan=full_kan,
-        degree=3,
+        spline_order=3,
         dropout=dropout,
     )
     out = net(input_tensor)
@@ -87,7 +87,7 @@ def test_sa_bn_kagn_conv_3d(dropout: float):
         use_postln_in_modulation=use_postln_in_modulation,
         normalize_modulator=normalize_modulator,
         full_kan=full_kan,
-        degree=3,
+        spline_order=3,
         dropout=dropout,
     )
     out = net(input_tensor)

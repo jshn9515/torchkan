@@ -15,7 +15,7 @@ class KACNConvNDLayer(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -27,7 +27,7 @@ class KACNConvNDLayer(nn.Module):
         super(KACNConvNDLayer, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.degree = degree
+        self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.padding = padding
         self.stride = stride
@@ -57,7 +57,7 @@ class KACNConvNDLayer(nn.Module):
         self.layer_norm = nn.ModuleList([layer_norm] * groups)
 
         poly_conv = conv_class(
-            in_channels=(degree + 1) * in_channels // groups,
+            in_channels=(spline_order + 1) * in_channels // groups,
             out_channels=out_channels // groups,
             kernel_size=kernel_size,
             stride=stride,
@@ -69,7 +69,7 @@ class KACNConvNDLayer(nn.Module):
         self.poly_conv = nn.ModuleList([poly_conv] * groups)
 
         arange_buffer_size = (1, 1, -1) + (1,) * ndim
-        self.arange = torch.arange(0, degree + 1, 1).view(arange_buffer_size)
+        self.arange = torch.arange(0, spline_order + 1, 1).view(arange_buffer_size)
 
         if isinstance(kernel_size, int):
             kernel_size = (kernel_size,)
@@ -82,7 +82,7 @@ class KACNConvNDLayer(nn.Module):
                 std=1
                 / (
                     in_channels
-                    * (degree + 1)
+                    * (spline_order + 1)
                     * (sum(kernel_size) / len(kernel_size)) ** ndim
                 ),
             )
@@ -120,7 +120,7 @@ class KACNConv3DLayer(KACNConvNDLayer):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -130,7 +130,7 @@ class KACNConv3DLayer(KACNConvNDLayer):
             ndim=3,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -151,7 +151,7 @@ class KACNConv2DLayer(KACNConvNDLayer):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -161,7 +161,7 @@ class KACNConv2DLayer(KACNConvNDLayer):
             ndim=2,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -182,7 +182,7 @@ class KACNConv1DLayer(KACNConvNDLayer):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -192,7 +192,7 @@ class KACNConv1DLayer(KACNConvNDLayer):
             ndim=1,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,

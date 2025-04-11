@@ -357,7 +357,7 @@ class SelfKAGNtention3D(SelfKANtentionND):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -371,7 +371,7 @@ class SelfKAGNtention3D(SelfKANtentionND):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -387,7 +387,7 @@ class SelfKAGNtention2D(SelfKANtentionND):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -401,7 +401,7 @@ class SelfKAGNtention2D(SelfKANtentionND):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -417,7 +417,7 @@ class SelfKAGNtention1D(SelfKANtentionND):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -431,7 +431,7 @@ class SelfKAGNtention1D(SelfKANtentionND):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -447,7 +447,7 @@ class BottleNeckSelfKAGNtention3D(SelfKANtentionND):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -461,7 +461,7 @@ class BottleNeckSelfKAGNtention3D(SelfKANtentionND):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -477,7 +477,7 @@ class BottleNeckSelfKAGNtention2D(SelfKANtentionND):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -491,7 +491,7 @@ class BottleNeckSelfKAGNtention2D(SelfKANtentionND):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -507,7 +507,7 @@ class BottleNeckSelfKAGNtention1D(SelfKANtentionND):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -521,7 +521,7 @@ class BottleNeckSelfKAGNtention1D(SelfKANtentionND):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -537,7 +537,7 @@ class RoPEBottleNeckSelfKAGNtention3D(RoPESelfKANtentionND):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         rope_theta: float = 10.0,
         rope_mixed: bool = True,
@@ -549,7 +549,7 @@ class RoPEBottleNeckSelfKAGNtention3D(RoPESelfKANtentionND):
             input_dim=input_dim,
             inner_projection=inner_projection,
             kernel_size=kernel_size,
-            degree=degree,
+            spline_order=spline_order,
             groups=groups,
             padding=padding,
             rope_theta=rope_theta,
@@ -571,7 +571,7 @@ class RoPEBottleNeckSelfKAGNtention2D(RoPESelfKANtentionND):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         rope_theta: float = 10.0,
         rope_mixed: bool = True,
@@ -583,7 +583,7 @@ class RoPEBottleNeckSelfKAGNtention2D(RoPESelfKANtentionND):
             input_dim=input_dim,
             inner_projection=inner_projection,
             kernel_size=kernel_size,
-            degree=degree,
+            spline_order=spline_order,
             groups=groups,
             padding=padding,
             rope_theta=rope_theta,
@@ -605,7 +605,7 @@ class RoPEBottleNeckSelfKAGNtention1D(RoPESelfKANtentionND):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         rope_theta: float = 10.0,
         rope_mixed: bool = True,
@@ -617,7 +617,7 @@ class RoPEBottleNeckSelfKAGNtention1D(RoPESelfKANtentionND):
             input_dim=input_dim,
             inner_projection=inner_projection,
             kernel_size=kernel_size,
-            degree=degree,
+            spline_order=spline_order,
             groups=groups,
             padding=padding,
             rope_theta=rope_theta,
@@ -1025,7 +1025,7 @@ class BottleNeckKAGNFocalModulation3D(KANFocalModulationND):
         use_postln_in_modulation: bool = True,
         normalize_modulator: bool = True,
         full_kan: bool = True,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -1041,7 +1041,7 @@ class BottleNeckKAGNFocalModulation3D(KANFocalModulationND):
             use_postln_in_modulation=use_postln_in_modulation,
             normalize_modulator=normalize_modulator,
             full_kan=full_kan,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -1057,7 +1057,7 @@ class BottleNeckKAGNFocalModulation2D(KANFocalModulationND):
         use_postln_in_modulation: bool = True,
         normalize_modulator: bool = True,
         full_kan: bool = True,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -1073,7 +1073,7 @@ class BottleNeckKAGNFocalModulation2D(KANFocalModulationND):
             use_postln_in_modulation=use_postln_in_modulation,
             normalize_modulator=normalize_modulator,
             full_kan=full_kan,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -1089,7 +1089,7 @@ class BottleNeckKAGNFocalModulation1D(KANFocalModulationND):
         use_postln_in_modulation: bool = True,
         normalize_modulator: bool = True,
         full_kan: bool = True,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -1105,7 +1105,7 @@ class BottleNeckKAGNFocalModulation1D(KANFocalModulationND):
             use_postln_in_modulation=use_postln_in_modulation,
             normalize_modulator=normalize_modulator,
             full_kan=full_kan,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -1121,7 +1121,7 @@ class KAGNFocalModulation3D(KANFocalModulationND):
         use_postln_in_modulation: bool = True,
         normalize_modulator: bool = True,
         full_kan: bool = True,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -1137,7 +1137,7 @@ class KAGNFocalModulation3D(KANFocalModulationND):
             use_postln_in_modulation=use_postln_in_modulation,
             normalize_modulator=normalize_modulator,
             full_kan=full_kan,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -1153,7 +1153,7 @@ class KAGNFocalModulation2D(KANFocalModulationND):
         use_postln_in_modulation: bool = True,
         normalize_modulator: bool = True,
         full_kan: bool = True,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -1169,7 +1169,7 @@ class KAGNFocalModulation2D(KANFocalModulationND):
             use_postln_in_modulation=use_postln_in_modulation,
             normalize_modulator=normalize_modulator,
             full_kan=full_kan,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )
@@ -1185,7 +1185,7 @@ class KAGNFocalModulation1D(KANFocalModulationND):
         use_postln_in_modulation: bool = True,
         normalize_modulator: bool = True,
         full_kan: bool = True,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **kwargs,
     ):
@@ -1201,7 +1201,7 @@ class KAGNFocalModulation1D(KANFocalModulationND):
             use_postln_in_modulation=use_postln_in_modulation,
             normalize_modulator=normalize_modulator,
             full_kan=full_kan,
-            degree=degree,
+            spline_order=spline_order,
             dropout=dropout,
             **kwargs,
         )

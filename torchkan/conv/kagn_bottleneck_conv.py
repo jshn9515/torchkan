@@ -25,7 +25,7 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -40,7 +40,7 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         super(BottleNeckKAGNConvNDLayer, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.degree = degree
+        self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.padding = padding
         self.stride = stride
@@ -120,12 +120,12 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         poly_shape = (
             groups,
             self.inner_channels,
-            self.inner_channels * (degree + 1),
+            self.inner_channels * (spline_order + 1),
             *kernel_size,
         )
 
         self.poly_weights = nn.Parameter(torch.randn(poly_shape))
-        self.beta_weights = nn.Parameter(torch.zeros(degree + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(torch.zeros(spline_order + 1, dtype=torch.float32))
 
         # Initialize weights using Kaiming uniform distribution for better training start
         for conv_layer in self.base_conv:
@@ -149,7 +149,7 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
             / (
                 (sum(kernel_size) / len(kernel_size) ** ndim)
                 * in_channels
-                * (degree + 1.0)
+                * (spline_order + 1.0)
             ),
         )
 
@@ -186,7 +186,7 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         x = self.inner_proj[group_index](x)
         x = torch.tanh(x).contiguous()
 
-        grams_basis = self.base_activation(self.gram_poly(x, self.degree))
+        grams_basis = self.base_activation(self.gram_poly(x, self.spline_order))
 
         y = self.conv_w_fun(
             grams_basis,
@@ -222,7 +222,7 @@ class BottleNeckKAGNConv3DLayer(BottleNeckKAGNConvNDLayer):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         dim_reduction: float = 4.0,
         **norm_kwargs,
@@ -234,7 +234,7 @@ class BottleNeckKAGNConv3DLayer(BottleNeckKAGNConvNDLayer):
             ndim=3,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -256,7 +256,7 @@ class BottleNeckKAGNConv2DLayer(BottleNeckKAGNConvNDLayer):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         dim_reduction: float = 4.0,
         **norm_kwargs,
@@ -268,7 +268,7 @@ class BottleNeckKAGNConv2DLayer(BottleNeckKAGNConvNDLayer):
             ndim=2,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -290,7 +290,7 @@ class BottleNeckKAGNConv1DLayer(BottleNeckKAGNConvNDLayer):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         dim_reduction: float = 4.0,
         **norm_kwargs,
@@ -302,7 +302,7 @@ class BottleNeckKAGNConv1DLayer(BottleNeckKAGNConvNDLayer):
             ndim=1,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -321,7 +321,7 @@ class KAGNExpert(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -333,7 +333,7 @@ class KAGNExpert(nn.Module):
         super(KAGNExpert, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.degree = degree
+        self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.padding = padding
         self.stride = stride
@@ -360,12 +360,12 @@ class KAGNExpert(nn.Module):
         poly_shape = (
             groups,
             out_channels // groups,
-            (in_channels // groups) * (degree + 1),
+            (in_channels // groups) * (spline_order + 1),
             *kernel_size,
         )
 
         self.poly_weights = nn.Parameter(torch.randn(poly_shape))
-        self.beta_weights = nn.Parameter(torch.zeros(degree + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(torch.zeros(spline_order + 1, dtype=torch.float32))
 
         nn.init.kaiming_uniform_(self.poly_weights, nonlinearity='linear')
         nn.init.normal_(
@@ -375,7 +375,7 @@ class KAGNExpert(nn.Module):
             / (
                 (sum(kernel_size) / len(kernel_size) ** ndim)
                 * in_channels
-                * (degree + 1.0)
+                * (spline_order + 1.0)
             ),
         )
 
@@ -404,7 +404,7 @@ class KAGNExpert(nn.Module):
     def forward_kag(self, x: Tensor, group_index: int) -> Tensor:
         x = torch.tanh(x).contiguous()
 
-        grams_basis = self.base_activation(self.gram_poly(x, self.degree))
+        grams_basis = self.base_activation(self.gram_poly(x, self.spline_order))
 
         if self.dropout:
             grams_basis = self.dropout(grams_basis)
@@ -438,7 +438,7 @@ class KAGNMoE(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -462,7 +462,7 @@ class KAGNMoE(nn.Module):
             ndim=ndim,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             groups=groups,
             padding=padding,
@@ -481,7 +481,7 @@ class KAGNMoE(nn.Module):
 
         self.pre_gate = None
         if pregate:
-            self.pre_gate = GRAMLayer(in_channels, out_channels, degree=degree)
+            self.pre_gate = GRAMLayer(in_channels, out_channels, spline_order=spline_order)
 
         self.softplus = nn.Softplus()
         self.softmax = nn.Softmax(1)
@@ -603,7 +603,7 @@ class MoEBottleNeckKAGNConvND(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -647,7 +647,7 @@ class MoEBottleNeckKAGNConvND(nn.Module):
             ndim=ndim,
             in_channels=inner_channels * groups,
             out_channels=inner_channels * groups,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             groups=groups,
             padding=padding,
@@ -778,7 +778,7 @@ class MoEBottleNeckKAGNConv3DLayer(MoEBottleNeckKAGNConvND):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         dim_reduction: float = 4,
         num_experts: int = 16,
@@ -794,7 +794,7 @@ class MoEBottleNeckKAGNConv3DLayer(MoEBottleNeckKAGNConvND):
             ndim=3,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -820,7 +820,7 @@ class MoEBottleNeckKAGNConv2DLayer(MoEBottleNeckKAGNConvND):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         dim_reduction: float = 4,
         num_experts: int = 16,
@@ -836,7 +836,7 @@ class MoEBottleNeckKAGNConv2DLayer(MoEBottleNeckKAGNConvND):
             ndim=2,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -862,7 +862,7 @@ class MoEBottleNeckKAGNConv1DLayer(MoEBottleNeckKAGNConvND):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         dim_reduction: float = 4,
         num_experts: int = 16,
@@ -878,7 +878,7 @@ class MoEBottleNeckKAGNConv1DLayer(MoEBottleNeckKAGNConvND):
             ndim=1,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,

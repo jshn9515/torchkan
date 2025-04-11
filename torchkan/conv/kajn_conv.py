@@ -20,7 +20,7 @@ class KAJNConvNDLayer(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -35,7 +35,7 @@ class KAJNConvNDLayer(nn.Module):
         super(KAJNConvNDLayer, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.degree = degree
+        self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.padding = padding
         self.stride = stride
@@ -85,7 +85,7 @@ class KAJNConvNDLayer(nn.Module):
         poly_shape = (
             groups,
             out_channels // groups,
-            (in_channels // groups) * (degree + 1),
+            (in_channels // groups) * (spline_order + 1),
             *kernel_size,
         )
 
@@ -102,7 +102,10 @@ class KAJNConvNDLayer(nn.Module):
             mean=0.0,
             std=1
             / (
-                in_channels * (degree + 1) * sum(kernel_size) / len(kernel_size) ** ndim
+                in_channels
+                * (spline_order + 1)
+                * sum(kernel_size)
+                / len(kernel_size) ** ndim
             ),
         )
 
@@ -149,7 +152,7 @@ class KAJNConvNDLayer(nn.Module):
         x_normalized = torch.tanh(x)
 
         # Compute Legendre polynomials for the normalized x
-        jacobi_basis = self.compute_jacobi_polynomials(x_normalized, self.degree)
+        jacobi_basis = self.compute_jacobi_polynomials(x_normalized, self.spline_order)
 
         if self.dropout:
             jacobi_basis = self.dropout(jacobi_basis)
@@ -198,7 +201,7 @@ class KAJNConv3DLayer(KAJNConvNDLayer):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -209,7 +212,7 @@ class KAJNConv3DLayer(KAJNConvNDLayer):
             ndim=3,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -230,7 +233,7 @@ class KAJNConv2DLayer(KAJNConvNDLayer):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -241,7 +244,7 @@ class KAJNConv2DLayer(KAJNConvNDLayer):
             ndim=2,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -262,7 +265,7 @@ class KAJNConv1DLayer(KAJNConvNDLayer):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -273,7 +276,7 @@ class KAJNConv1DLayer(KAJNConvNDLayer):
             ndim=1,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,

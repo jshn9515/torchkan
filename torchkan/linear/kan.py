@@ -101,7 +101,7 @@ class KALN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
         l1_decay: float = 0.0,
-        degree: int = 3,
+        spline_order: int = 3,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
         first_dropout: bool = False,
     ):
@@ -110,7 +110,7 @@ class KALN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
         # polynomial_order: Order up to which Legendre polynomials are calculated
-        self.polynomial_order = degree
+        self.polynomial_order = spline_order
         # list of layers
         self.layers = nn.ModuleList([])
         if dropout > 0 and first_dropout:
@@ -125,7 +125,7 @@ class KALN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
             layer = KALNLayer(
                 in_features=in_features,
                 out_features=out_features,
-                degree=degree,
+                spline_order=spline_order,
                 base_activation=base_activation,
             )
             if l1_decay > 0 and i != self.num_layers - 1:
@@ -198,7 +198,7 @@ class KACN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         self,
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
-        degree: int = 3,
+        spline_order: int = 3,
         l1_decay: float = 0.0,
         first_dropout: bool = False,
     ):
@@ -207,7 +207,7 @@ class KACN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
         # polynomial_order: Order up to which Legendre polynomials are calculated
-        self.polynomial_order = degree
+        self.polynomial_order = spline_order
         # list of layers
         self.layers = nn.ModuleList([])
         if dropout > 0 and first_dropout:
@@ -218,7 +218,7 @@ class KACN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
             itertools.pairwise(hidden_layers)
         ):
             # Base weight for linear transformation in each layer
-            layer = ChebyKANLayer(in_features, out_features, degree=degree)
+            layer = ChebyKANLayer(in_features, out_features, spline_order=spline_order)
             if l1_decay > 0 and i != self.num_layers - 1:
                 layer = L1(layer, l1_decay)
             self.layers.append(layer)
@@ -237,7 +237,7 @@ class KAGN(nn.Module):
         self,
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
-        degree: int = 3,
+        spline_order: int = 3,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
         l1_decay: float = 0.0,
         first_dropout: bool = False,
@@ -247,7 +247,7 @@ class KAGN(nn.Module):
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
         # polynomial_order: Order up to which Legendre polynomials are calculated
-        self.polynomial_order = degree
+        self.polynomial_order = spline_order
         # list of layers
         self.layers = nn.ModuleList([])
         if dropout > 0 and first_dropout:
@@ -262,7 +262,7 @@ class KAGN(nn.Module):
             layer = GRAMLayer(
                 in_features,
                 out_features,
-                degree=degree,
+                spline_order=spline_order,
                 base_activation=base_activation,
             )
             if l1_decay > 0 and i != self.num_layers - 1:
@@ -283,7 +283,7 @@ class BottleNeckKAGN(nn.Module):
         self,
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
-        degree: int = 3,
+        spline_order: int = 3,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
         l1_decay: float = 0.0,
         first_dropout: bool = True,
@@ -295,7 +295,7 @@ class BottleNeckKAGN(nn.Module):
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
         # polynomial_order: Order up to which Legendre polynomials are calculated
-        self.polynomial_order = degree
+        self.polynomial_order = spline_order
         # list of layers
         self.layers = nn.ModuleList([])
         if dropout > 0 and first_dropout:
@@ -310,7 +310,7 @@ class BottleNeckKAGN(nn.Module):
             layer = BottleNeckGRAMLayer(
                 in_features,
                 out_features,
-                degree=degree,
+                spline_order=spline_order,
                 base_activation=base_activation,
                 dim_reduction=dim_reduction,
                 min_internal=min_internal,
@@ -333,7 +333,7 @@ class KABN(nn.Module):
         self,
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
-        degree: int = 3,
+        spline_order: int = 3,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
         l1_decay: float = 0.0,
         first_dropout: bool = False,
@@ -343,7 +343,7 @@ class KABN(nn.Module):
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
         # polynomial_order: Order up to which Legendre polynomials are calculated
-        self.polynomial_order = degree
+        self.polynomial_order = spline_order
         # list of layers
         self.layers = nn.ModuleList([])
         if dropout > 0 and first_dropout:
@@ -358,7 +358,7 @@ class KABN(nn.Module):
             layer = BernsteinKANLayer(
                 in_features,
                 out_features,
-                degree=degree,
+                spline_order=spline_order,
                 base_activation=base_activation,
             )
             if l1_decay > 0 and i != self.num_layers - 1:
@@ -380,7 +380,7 @@ class KAJN(nn.Module):
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
         l1_decay: float = 0.0,
-        degree: int = 3,
+        spline_order: int = 3,
         a: float = 1,
         b: float = 1,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
@@ -391,7 +391,7 @@ class KAJN(nn.Module):
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
         # polynomial_order: Order up to which Legendre polynomials are calculated
-        self.polynomial_order = degree
+        self.polynomial_order = spline_order
         # list of layers
         self.layers = nn.ModuleList([])
         if dropout > 0 and first_dropout:
@@ -406,7 +406,7 @@ class KAJN(nn.Module):
             layer = JacobiKANLayer(
                 in_features,
                 out_features,
-                degree=degree,
+                spline_order=spline_order,
                 a=a,
                 b=b,
                 base_activation=base_activation,

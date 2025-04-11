@@ -126,7 +126,7 @@ class KALNLayer(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         self,
         in_features: int,
         out_features: int,
-        degree: int = 3,
+        spline_order: int = 3,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
     ):
         super(KALNLayer, self).__init__()  # Initialize the parent nn.Module class
@@ -134,7 +134,7 @@ class KALNLayer(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         self.in_features = in_features
         self.out_features = out_features
         # polynomial_order: Order up to which Legendre polynomials are calculated
-        self.polynomial_order = degree
+        self.polynomial_order = spline_order
         # base_activation: base_activation function used after each layer's computation
         self.base_activation = base_activation
 
@@ -142,7 +142,7 @@ class KALNLayer(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         self.base_weight = nn.Parameter(torch.randn(out_features, in_features))
         # Polynomial weight for handling Legendre polynomial expansions
         self.poly_weight = nn.Parameter(
-            torch.randn(out_features, in_features * (degree + 1))
+            torch.randn(out_features, in_features * (spline_order + 1))
         )
         # Layer normalization to stabilize learning and outputs
         self.layer_norm = nn.LayerNorm(out_features)
@@ -238,31 +238,31 @@ class FastKANLayer(nn.Module):
 
 # This is inspired by Kolmogorov-Arnold Networks but using Chebyshev polynomials instead of splines coefficients
 class ChebyKANLayer(nn.Module):
-    def __init__(self, in_features: int, out_features: int, degree: int):
+    def __init__(self, in_features: int, out_features: int, spline_order: int):
         super(ChebyKANLayer, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.degree = degree
+        self.spline_order = spline_order
 
         self.cheby_coeff = nn.Parameter(
-            torch.empty(in_features, out_features, degree + 1)
+            torch.empty(in_features, out_features, spline_order + 1)
         )
         nn.init.normal_(
-            self.cheby_coeff, mean=0.0, std=1 / (in_features * (degree + 1))
+            self.cheby_coeff, mean=0.0, std=1 / (in_features * (spline_order + 1))
         )
-        # self.register_buffer('arange', torch.arange(0, degree + 1, 1))
-        self.arange = torch.arange(0, degree + 1, 1, dtype=torch.float32)
+        # self.register_buffer('arange', torch.arange(0, spline_order + 1, 1))
+        self.arange = torch.arange(0, spline_order + 1, 1, dtype=torch.float32)
 
     def forward(self, x: Tensor) -> Tensor:
         # Since Chebyshev polynomial is defined in [-1, 1]
         # We need to normalize x to [-1, 1] using tanh
         x = torch.tanh(x)
-        # View and repeat input degree + 1 times
-        # shape = (batch_size, in_features, self.degree + 1)
-        x = x.view((-1, self.in_features, 1)).expand(-1, -1, self.degree + 1)
+        # View and repeat input spline_order + 1 times
+        # shape = (batch_size, in_features, self.spline_order + 1)
+        x = x.view(-1, self.in_features, 1).expand(-1, -1, self.spline_order + 1)
         # Apply acos
         x = torch.acos(x)
-        # Multiply by arange [0 ... degree]
+        # Multiply by arange [0 ... spline_order]
         x *= self.arange
         # Apply cos
         x = torch.cos(x)
@@ -279,20 +279,24 @@ class GRAMLayer(nn.Module):
         self,
         in_features: int,
         out_features: int,
-        degree: int = 3,
+        spline_order: int = 3,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
     ):
         super(GRAMLayer, self).__init__()
 
         self.in_features = in_features
         self.out_features = out_features
-        self.degrees = degree
+        self.spline_orders = spline_order
         self.base_activation = base_activation
         self.norm = nn.LayerNorm(out_features, dtype=torch.float32)
-        self.beta_weights = nn.Parameter(torch.zeros(degree + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(
+            torch.zeros(spline_order + 1, dtype=torch.float32)
+        )
 
         self.grams_basis_weights = nn.Parameter(
-            torch.zeros(in_features, out_features, degree + 1, dtype=torch.float32)
+            torch.zeros(
+                in_features, out_features, spline_order + 1, dtype=torch.float32
+            )
         )
         self.base_weights = nn.Parameter(
             torch.zeros(out_features, in_features, dtype=torch.float32)
@@ -303,7 +307,7 @@ class GRAMLayer(nn.Module):
         nn.init.normal_(
             self.beta_weights,
             mean=0.0,
-            std=1.0 / (self.in_features * (self.degrees + 1.0)),
+            std=1.0 / (self.in_features * (self.spline_orders + 1.0)),
         )
         nn.init.xavier_uniform_(self.grams_basis_weights)
         nn.init.xavier_uniform_(self.base_weights)
@@ -314,15 +318,15 @@ class GRAMLayer(nn.Module):
         ) * self.beta_weights[n]
 
     @lru_cache(maxsize=128)
-    def gram_poly(self, x: Tensor, degree: int) -> Tensor:
+    def gram_poly(self, x: Tensor, spline_order: int) -> Tensor:
         P0 = x.new_ones(x.size())
-        if degree == 0:
+        if spline_order == 0:
             return torch.unsqueeze(P0, dim=-1)
 
         P1 = x
         grams_basis = [P0, P1]
 
-        for i in range(2, degree + 1):
+        for i in range(2, spline_order + 1):
             P2 = x * P1 - self.beta(i - 1, i) * P0
             grams_basis.append(P2)
             P0, P1 = P1, P2
@@ -332,7 +336,7 @@ class GRAMLayer(nn.Module):
     def forward(self, x: Tensor) -> Tensor:
         basis = F.linear(self.base_activation(x), self.base_weights)
         x = torch.tanh(x).contiguous()
-        grams_basis = self.base_activation(self.gram_poly(x, self.degrees))
+        grams_basis = self.base_activation(self.gram_poly(x, self.spline_orders))
 
         y = torch.einsum('bid,iod->bo', grams_basis, self.grams_basis_weights)
 
@@ -461,7 +465,7 @@ class JacobiKANLayer(nn.Module):
         self,
         in_features: int,
         out_features: int,
-        degree: int,
+        spline_order: int,
         a: float = 1.0,
         b: float = 1.0,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
@@ -471,7 +475,7 @@ class JacobiKANLayer(nn.Module):
         self.out_features = out_features
         self.a = a
         self.b = b
-        self.degree = degree
+        self.spline_order = spline_order
 
         self.base_activation = base_activation
         self.norm = nn.LayerNorm(out_features, dtype=torch.float32)
@@ -481,11 +485,11 @@ class JacobiKANLayer(nn.Module):
         )
 
         self.jacobi_coeff = nn.Parameter(
-            torch.empty(in_features, out_features, degree + 1)
+            torch.empty(in_features, out_features, spline_order + 1)
         )
 
         nn.init.normal_(
-            self.jacobi_coeff, mean=0.0, std=1 / (in_features * (degree + 1))
+            self.jacobi_coeff, mean=0.0, std=1 / (in_features * (spline_order + 1))
         )
         nn.init.xavier_uniform_(self.base_weights)
 
@@ -499,13 +503,12 @@ class JacobiKANLayer(nn.Module):
         x = torch.tanh(x)
         # Initialize Jacobian polynomial tensors
         jacobi = torch.ones(
-            x.shape[0], self.in_features, self.degree + 1, device=x.device
+            x.shape[0], self.in_features, self.spline_order + 1, device=x.device
         )
-        if (
-            self.degree > 0
-        ):  # degree = 0: jacobi[:, :, 0] = 1 (already initialized); degree = 1: jacobi[:, :, 1] = x;
+        if self.spline_order > 0:
+            # spline_order = 0: jacobi[:, :, 0] = 1 (already initialized); spline_order = 1: jacobi[:, :, 1] = x;
             jacobi[:, :, 1] = ((self.a - self.b) + (self.a + self.b + 2) * x) / 2
-        for i in range(2, self.degree + 1):
+        for i in range(2, self.spline_order + 1):
             theta_k = (
                 (2 * i + self.a + self.b)
                 * (2 * i + self.a + self.b - 1)
@@ -540,13 +543,13 @@ class BernsteinKANLayer(nn.Module):
         self,
         in_features: int,
         out_features: int,
-        degree: int,
+        spline_order: int,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
     ):
         super(BernsteinKANLayer, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.degree = degree
+        self.spline_order = spline_order
         self.norm = nn.LayerNorm(out_features, dtype=torch.float32)
 
         self.base_weights = nn.Parameter(
@@ -554,22 +557,22 @@ class BernsteinKANLayer(nn.Module):
         )
 
         self.bernstein_coeff = nn.Parameter(
-            torch.empty(in_features, out_features, degree + 1)
+            torch.empty(in_features, out_features, spline_order + 1)
         )
         self.base_activation = base_activation
 
         nn.init.normal_(
-            self.bernstein_coeff, mean=0.0, std=1 / (in_features * (degree + 1))
+            self.bernstein_coeff, mean=0.0, std=1 / (in_features * (spline_order + 1))
         )
         nn.init.xavier_uniform_(self.base_weights)
 
     @lru_cache(maxsize=128)
-    def bernstein_poly(self, x: Tensor, degree: int) -> Tensor:
+    def bernstein_poly(self, x: Tensor, spline_order: int) -> Tensor:
         bernsteins = torch.ones(
-            x.shape + (self.degree + 1,), dtype=x.dtype, device=x.device
+            x.shape + (self.spline_order + 1,), dtype=x.dtype, device=x.device
         )
-        for j in range(1, degree + 1):
-            for k in range(degree + 1 - j):
+        for j in range(1, spline_order + 1):
+            for k in range(spline_order + 1 - j):
                 bernsteins[..., k] = (
                     bernsteins[..., k] * (1 - x) + bernsteins[..., k + 1] * x
                 )
@@ -586,7 +589,7 @@ class BernsteinKANLayer(nn.Module):
         # We need to normalize x to [0, 1] using sigmoid
         x = torch.sigmoid(x)
 
-        bernsteins = self.bernstein_poly(x, self.degree)
+        bernsteins = self.bernstein_poly(x, self.spline_order)
         y = torch.einsum(
             'bid,iod->bo', bernsteins, self.bernstein_coeff
         )  # shape = (batch_size, out_features)
@@ -637,7 +640,7 @@ class BottleNeckGRAMLayer(nn.Module):
         self,
         in_features: int,
         out_features: int,
-        degree: int = 3,
+        spline_order: int = 3,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
         dim_reduction: float = 8,
         min_internal: int = 16,
@@ -646,7 +649,7 @@ class BottleNeckGRAMLayer(nn.Module):
 
         self.in_features = in_features
         self.out_features = out_features
-        self.degrees = degree
+        self.spline_order = spline_order
 
         self.dim_reduction = dim_reduction
         self.min_internal = min_internal
@@ -664,10 +667,14 @@ class BottleNeckGRAMLayer(nn.Module):
 
         self.norm = nn.LayerNorm(out_features, dtype=torch.float32)
 
-        self.beta_weights = nn.Parameter(torch.zeros(degree + 1, dtype=torch.float32))
+        self.beta_weights = nn.Parameter(
+            torch.zeros(spline_order + 1, dtype=torch.float32)
+        )
 
         self.grams_basis_weights = nn.Parameter(
-            torch.zeros(self.inner_dim, self.inner_dim, degree + 1, dtype=torch.float32)
+            torch.zeros(
+                self.inner_dim, self.inner_dim, spline_order + 1, dtype=torch.float32
+            )
         )
 
         self.base_weights = nn.Parameter(
@@ -680,11 +687,9 @@ class BottleNeckGRAMLayer(nn.Module):
         nn.init.normal_(
             self.beta_weights,
             mean=0.0,
-            std=1.0 / (self.in_features * (self.degrees + 1.0)),
+            std=1.0 / (self.in_features * (self.spline_order + 1.0)),
         )
-
         nn.init.xavier_uniform_(self.grams_basis_weights)
-
         nn.init.xavier_uniform_(self.base_weights)
         nn.init.xavier_uniform_(self.inner_proj.weight)
         nn.init.xavier_uniform_(self.outer_proj.weight)
@@ -695,16 +700,16 @@ class BottleNeckGRAMLayer(nn.Module):
         ) * self.beta_weights[n]
 
     @lru_cache(maxsize=128)
-    def gram_poly(self, x: Tensor, degree: int) -> Tensor:
+    def gram_poly(self, x: Tensor) -> Tensor:
         P0 = x.new_ones(x.size())
 
-        if degree == 0:
+        if self.spline_order == 0:
             return torch.unsqueeze(P0, dim=-1)
 
         P1 = x
         grams_basis = [P0, P1]
 
-        for i in range(2, degree + 1):
+        for i in range(2, self.spline_order + 1):
             P2 = x * P1 - self.beta(i - 1, i) * P0
             grams_basis.append(P2)
             P0, P1 = P1, P2
@@ -715,7 +720,7 @@ class BottleNeckGRAMLayer(nn.Module):
         basis = F.linear(self.base_activation(x), self.base_weights)
         x = self.inner_proj(x)
         x = torch.tanh(x).contiguous()
-        grams_basis = self.base_activation(self.gram_poly(x, self.degrees))
+        grams_basis = self.base_activation(self.gram_poly(x, self.spline_orders))
 
         y = torch.einsum('bid,iod->bo', grams_basis, self.grams_basis_weights)
 

@@ -74,10 +74,10 @@ def test_kacn_fc():
     batch_size = 6
     input_dim = 4
     output_dim = 16
-    degree = 3
+    spline_order = 3
 
     input_tensor = torch.rand(batch_size, input_dim)
-    net = ChebyKANLayer(input_dim, output_dim, degree=degree)
+    net = ChebyKANLayer(input_dim, output_dim, spline_order=spline_order)
     out = net(input_tensor)
     assert out.shape == (batch_size, output_dim)
 
@@ -86,10 +86,10 @@ def test_kagn_fc():
     batch_size = 6
     input_dim = 4
     output_dim = 16
-    degree = 3
+    spline_order = 3
 
     input_tensor = torch.rand(batch_size, input_dim)
-    net = GRAMLayer(input_dim, output_dim, degree=degree, base_activation=nn.SiLU())
+    net = GRAMLayer(input_dim, output_dim, spline_order=spline_order, base_activation=nn.SiLU())
     out = net(input_tensor)
     assert out.shape == (batch_size, output_dim)
 
@@ -98,13 +98,13 @@ def test_bn_kagn_fc():
     batch_size = 6
     input_dim = 64
     output_dim = 128
-    degree = 3
+    spline_order = 3
 
     input_tensor = torch.rand(batch_size, input_dim)
     net = BottleNeckGRAMLayer(
         input_dim,
         output_dim,
-        degree,
+        spline_order,
         base_activation=nn.SiLU(),
         dim_reduction=4,
         min_internal=8,
@@ -117,10 +117,10 @@ def test_kajn_fc():
     batch_size = 6
     input_dim = 4
     output_dim = 16
-    degree = 3
+    spline_order = 3
 
     input_tensor = torch.rand(batch_size, input_dim)
-    net = JacobiKANLayer(input_dim, output_dim, degree=degree)
+    net = JacobiKANLayer(input_dim, output_dim, spline_order=spline_order)
     out = net(input_tensor)
     assert out.shape == (batch_size, output_dim)
 
@@ -129,10 +129,10 @@ def test_kaln_fc():
     batch_size = 6
     input_dim = 4
     output_dim = 16
-    degree = 3
+    spline_order = 3
 
     input_tensor = torch.rand(batch_size, input_dim)
-    net = KALNLayer(input_dim, output_dim, degree=degree, base_activation=nn.SiLU())
+    net = KALNLayer(input_dim, output_dim, spline_order=spline_order, base_activation=nn.SiLU())
     out = net(input_tensor)
     assert out.shape == (batch_size, output_dim)
 
@@ -141,11 +141,11 @@ def test_kabn_fc():
     batch_size = 6
     input_dim = 4
     output_dim = 16
-    degree = 3
+    spline_order = 3
 
     input_tensor = torch.rand(batch_size, input_dim)
     net = BernsteinKANLayer(
-        input_dim, output_dim, degree=degree, base_activation=nn.SiLU()
+        input_dim, output_dim, spline_order=spline_order, base_activation=nn.SiLU()
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, output_dim)

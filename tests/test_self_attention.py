@@ -34,7 +34,7 @@ def test_sa_kagn_conv_1d(dropout: float, groups: int, inner_projection: int):
         dilation=1,
         groups=groups,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, num_features, spatial_dim)
@@ -61,7 +61,7 @@ def test_sa_kagn_conv_2d(dropout: float, groups: int, inner_projection: int):
         dilation=1,
         groups=groups,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, num_features, spatial_dim, spatial_dim)
@@ -90,7 +90,7 @@ def test_sa_kagn_conv_3d(dropout: float, groups: int, inner_projection: int):
         dilation=1,
         groups=groups,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (
@@ -123,7 +123,7 @@ def test_sa_bn_kagn_conv_1d(dropout: float, groups: int, inner_projection: int):
         dilation=1,
         groups=groups,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, num_features, spatial_dim)
@@ -150,7 +150,7 @@ def test_sa_bn_kagn_conv_2d(dropout: float, groups: int, inner_projection: int):
         dilation=1,
         groups=groups,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, num_features, spatial_dim, spatial_dim)
@@ -179,7 +179,7 @@ def test_sa_bn_kagn_conv_3d(dropout: float, groups: int, inner_projection: int):
         dilation=1,
         groups=groups,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (

@@ -35,7 +35,7 @@ def test_kagn_conv_1d(dropout, groups):
         stride=1,
         dilation=1,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim)
@@ -60,7 +60,7 @@ def test_kagn_conv_2d(dropout, groups):
         stride=1,
         dilation=1,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim, spatial_dim)
@@ -87,7 +87,7 @@ def test_kagn_conv_3d(dropout, groups):
         stride=1,
         dilation=1,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out = net(input_tensor)
     assert out.shape == (
@@ -118,7 +118,7 @@ def test_moe_kagn_conv_1d(dropout, groups):
         stride=1,
         dilation=1,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out, _ = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim)
@@ -145,7 +145,7 @@ def test_moe_kagn_conv_2d(dropout, groups, pregate):
         stride=1,
         dilation=1,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
         pregate=pregate,
     )
     out, _ = net(input_tensor)
@@ -173,7 +173,7 @@ def test_moe_kagn_conv_3d(dropout, groups):
         stride=1,
         dilation=1,
         dropout=dropout,
-        degree=3,
+        spline_order=3,
     )
     out, _ = net(input_tensor)
     assert out.shape == (

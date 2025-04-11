@@ -18,7 +18,7 @@ class KABNConvNDLayer(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        degree: int,
+        spline_order: int,
         kernel_size: int | tuple[int, ...],
         stride: int | tuple[int, ...],
         padding: PaddingType | int | tuple[int, ...],
@@ -31,7 +31,7 @@ class KABNConvNDLayer(nn.Module):
         super(KABNConvNDLayer, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.degree = degree
+        self.spline_order = spline_order
         self.kernel_size = kernel_size
         self.padding = padding
         self.stride = stride
@@ -79,7 +79,7 @@ class KABNConvNDLayer(nn.Module):
         poly_shape = (
             groups,
             out_channels // groups,
-            (in_channels // groups) * (degree + 1),
+            (in_channels // groups) * (spline_order + 1),
             *kernel_size,
         )
 
@@ -96,7 +96,7 @@ class KABNConvNDLayer(nn.Module):
     @lru_cache(maxsize=128)
     def bernstein_poly(self, x: Tensor, order: int) -> Tensor:
         bernsteins = torch.ones(
-            x.shape + (self.degree + 1,), dtype=x.dtype, device=x.device
+            x.shape + (self.spline_order + 1,), dtype=x.dtype, device=x.device
         )
         for j in range(1, order + 1):
             for k in range(order + 1 - j):
@@ -119,7 +119,7 @@ class KABNConvNDLayer(nn.Module):
             x_normalized = self.dropout(x_normalized)
 
         # Compute Legendre polynomials for the normalized x
-        bernstein_basis = self.bernstein_poly(x_normalized, self.degree)
+        bernstein_basis = self.bernstein_poly(x_normalized, self.spline_order)
         # Reshape legendre_basis to match the expected input dimensions for linear transformation
         # Compute polynomial output using polynomial weights
         poly_output = self.conv_w_fun(
@@ -164,7 +164,7 @@ class KABNConv3DLayer(KABNConvNDLayer):
         padding: PaddingType | int | tuple[int, int, int] = 0,
         dilation: int | tuple[int, int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -175,7 +175,7 @@ class KABNConv3DLayer(KABNConvNDLayer):
             ndim=3,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -196,7 +196,7 @@ class KABNConv2DLayer(KABNConvNDLayer):
         padding: PaddingType | int | tuple[int, int] = 0,
         dilation: int | tuple[int, int] = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -207,7 +207,7 @@ class KABNConv2DLayer(KABNConvNDLayer):
             ndim=2,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -228,7 +228,7 @@ class KABNConv1DLayer(KABNConvNDLayer):
         padding: PaddingType | int = 0,
         dilation: int = 1,
         groups: int = 1,
-        degree: int = 3,
+        spline_order: int = 3,
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -239,7 +239,7 @@ class KABNConv1DLayer(KABNConvNDLayer):
             ndim=1,
             in_channels=in_channels,
             out_channels=out_channels,
-            degree=degree,
+            spline_order=spline_order,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
