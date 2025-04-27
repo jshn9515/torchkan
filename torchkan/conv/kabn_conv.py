@@ -94,17 +94,18 @@ class KABNConvNDLayer(nn.Module):
         nn.init.kaiming_uniform_(self.poly_weights, nonlinearity='linear')
 
     @lru_cache(maxsize=128)
-    def bernstein_poly(self, x: Tensor, order: int) -> Tensor:
+    def bernstein_poly(self, x: Tensor) -> Tensor:
         bernsteins = torch.ones(
             x.shape + (self.spline_order + 1,), dtype=x.dtype, device=x.device
         )
-        for j in range(1, order + 1):
-            for k in range(order + 1 - j):
-                bernsteins[..., k] = (
-                    bernsteins[..., k] * (1 - x) + bernsteins[..., k + 1] * x
-                )
 
-        bernsteins = bernsteins.moveaxis(-1, 2).flatten(1, 2)
+        with torch.no_grad():
+            for j in range(1, self.spline_order + 1):
+                for k in range(self.spline_order + 1 - j):
+                    bernsteins[..., k] = (
+                        bernsteins[..., k] * (1 - x) + bernsteins[..., k + 1] * x
+                    )
+            bernsteins = bernsteins.moveaxis(-1, 2).flatten(1, 2)
 
         return bernsteins
 
@@ -119,7 +120,7 @@ class KABNConvNDLayer(nn.Module):
             x_normalized = self.dropout(x_normalized)
 
         # Compute Legendre polynomials for the normalized x
-        bernstein_basis = self.bernstein_poly(x_normalized, self.spline_order)
+        bernstein_basis = self.bernstein_poly(x_normalized)
         # Reshape legendre_basis to match the expected input dimensions for linear transformation
         # Compute polynomial output using polynomial weights
         poly_output = self.conv_w_fun(
