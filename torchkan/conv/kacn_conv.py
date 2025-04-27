@@ -69,7 +69,9 @@ class KACNConvNDLayer(nn.Module):
         self.poly_conv = nn.ModuleList([poly_conv] * groups)
 
         arange_buffer_size = (1, 1, -1) + (1,) * ndim
-        self.arange = torch.arange(0, spline_order + 1, 1).view(arange_buffer_size)
+        self.register_buffer(
+            'arange', torch.arange(0, spline_order + 1, 1).view(arange_buffer_size)
+        )
 
         if isinstance(kernel_size, int):
             kernel_size = (kernel_size,)
@@ -92,7 +94,7 @@ class KACNConvNDLayer(nn.Module):
         x = torch.tanh(x)
         x = torch.acos(torch.clamp(x, -1 + self.epsilon, 1 - self.epsilon))
         x = torch.unsqueeze(x, dim=2)
-        x = (x * self.arange).flatten(1, 2)
+        x = (x * self.arange).flatten(1, 2)  # type: ignore[assignment]
         x = torch.cos(x)
         x = self.poly_conv[group_index](x)
         x = self.layer_norm[group_index](x)
