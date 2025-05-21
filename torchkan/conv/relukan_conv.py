@@ -94,12 +94,12 @@ class ReLUConvNDLayer(nn.Module):
         phase_dims = (1, in_channels // groups, k + g) + (1,) * ndim
 
         self.phase_low = nn.Parameter(
-            (phase_low[None, :].expand(in_channels // groups, -1)).view(phase_dims),
+            (phase_low[None, :].repeat(in_channels // groups, -1)).view(phase_dims),
             requires_grad=train_ab,
         )
 
         self.phase_high = nn.Parameter(
-            (phase_high[None, :].expand(in_channels // groups, -1)).view(phase_dims),
+            (phase_high[None, :].repeat(in_channels // groups, -1)).view(phase_dims),
             requires_grad=train_ab,
         )
 
