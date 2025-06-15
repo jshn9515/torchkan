@@ -91,15 +91,18 @@ class ReLUConvNDLayer(nn.Module):
         phase_low = torch.arange(-k, g) / g
         phase_high = phase_low + (k + 1) / g
 
+        phase_low = phase_low[None, :].repeat(in_channels // groups, 1)
+        phase_high = phase_high[None, :].repeat(in_channels // groups, 1)
+
         phase_dims = (1, in_channels // groups, k + g) + (1,) * ndim
 
         self.phase_low = nn.Parameter(
-            (phase_low[None, :].repeat(in_channels // groups, 1)).view(phase_dims),
+            phase_low.view(phase_dims),
             requires_grad=train_ab,
         )
 
         self.phase_high = nn.Parameter(
-            (phase_high[None, :].repeat(in_channels // groups, 1)).view(phase_dims),
+            phase_high.view(phase_dims),
             requires_grad=train_ab,
         )
 
