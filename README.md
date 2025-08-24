@@ -114,7 +114,7 @@ model = nn.Sequential(
     nn.MaxPool2d(kernel_size=2, stride=2),
     nn.Flatten(),
     torchkan.KANLayer(64 * 56 * 56, 256),
-    nn.ReLU(inplace=True),
+    nn.ReLU(),
     nn.Dropout(0.5),
     torchkan.KANLayer(256, 10),
 )
