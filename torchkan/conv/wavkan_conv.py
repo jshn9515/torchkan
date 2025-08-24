@@ -134,18 +134,19 @@ class WaveletConvND(nn.Module):
         x_expanded = torch.unsqueeze(x, dim=1)
         x_scaled = (x_expanded - self.translation) / self.scale
 
-        if self.wavelet_type == 'mexican_hat':
-            wavelet = self._forward_mexican_hat(x_scaled)
-        elif self.wavelet_type == 'morlet':
-            wavelet = self._forward_morlet(x_scaled)
-        elif self.wavelet_type == 'dog':
-            wavelet = self._forward_dog(x_scaled)
-        elif self.wavelet_type == 'meyer':
-            wavelet = self._forward_meyer(x_scaled)
-        elif self.wavelet_type == 'shannon':
-            wavelet = self._forward_shannon(x_scaled)
-        else:
-            raise ValueError(f'Unsupported wavelet type: {self.wavelet_type}')
+        match self.wavelet_type:
+            case 'mexican_hat':
+                wavelet = self._forward_mexican_hat(x_scaled)
+            case 'morlet':
+                wavelet = self._forward_morlet(x_scaled)
+            case 'dog':
+                wavelet = self._forward_dog(x_scaled)
+            case 'meyer':
+                wavelet = self._forward_meyer(x_scaled)
+            case 'shannon':
+                wavelet = self._forward_shannon(x_scaled)
+            case _:
+                raise ValueError(f'Unsupported wavelet type: {self.wavelet_type}')
 
         wavelet_x = torch.split(wavelet, 1, dim=1)
         output = []
@@ -238,18 +239,19 @@ class WaveletConvNDFastPlusOne(WaveletConvND):
         x_expanded = torch.unsqueeze(x, dim=1)
         x_scaled = (x_expanded - self.translation) / self.scale
 
-        if self.wavelet_type == 'mexican_hat':
-            wavelet = self._forward_mexican_hat(x_scaled)
-        elif self.wavelet_type == 'morlet':
-            wavelet = self._forward_morlet(x_scaled)
-        elif self.wavelet_type == 'dog':
-            wavelet = self._forward_dog(x_scaled)
-        elif self.wavelet_type == 'meyer':
-            wavelet = self._forward_meyer(x_scaled)
-        elif self.wavelet_type == 'shannon':
-            wavelet = self._forward_shannon(x_scaled)
-        else:
-            raise ValueError(f'Unsupported wavelet type: {self.wavelet_type}')
+        match self.wavelet_type:
+            case 'mexican_hat':
+                wavelet = self._forward_mexican_hat(x_scaled)
+            case 'morlet':
+                wavelet = self._forward_morlet(x_scaled)
+            case 'dog':
+                wavelet = self._forward_dog(x_scaled)
+            case 'meyer':
+                wavelet = self._forward_meyer(x_scaled)
+            case 'shannon':
+                wavelet = self._forward_shannon(x_scaled)
+            case _:
+                raise ValueError(f'Unsupported wavelet type: {self.wavelet_type}')
 
         y = self.wavelet_weights(wavelet)
         y = torch.squeeze(y, dim=2)
@@ -316,18 +318,19 @@ class WaveletConvNDFast(WaveletConvND):
         x_expanded = torch.unsqueeze(x, dim=1)
         x_scaled = (x_expanded - self.translation) / self.scale
 
-        if self.wavelet_type == 'mexican_hat':
-            wavelet = self._forward_mexican_hat(x_scaled)
-        elif self.wavelet_type == 'morlet':
-            wavelet = self._forward_morlet(x_scaled)
-        elif self.wavelet_type == 'dog':
-            wavelet = self._forward_dog(x_scaled)
-        elif self.wavelet_type == 'meyer':
-            wavelet = self._forward_meyer(x_scaled)
-        elif self.wavelet_type == 'shannon':
-            wavelet = self._forward_shannon(x_scaled)
-        else:
-            raise ValueError('Unsupported wavelet type')
+        match self.wavelet_type:
+            case 'mexican_hat':
+                wavelet = self._forward_mexican_hat(x_scaled)
+            case 'morlet':
+                wavelet = self._forward_morlet(x_scaled)
+            case 'dog':
+                wavelet = self._forward_dog(x_scaled)
+            case 'meyer':
+                wavelet = self._forward_meyer(x_scaled)
+            case 'shannon':
+                wavelet = self._forward_shannon(x_scaled)
+            case _:
+                raise ValueError(f'Unsupported wavelet type: {self.wavelet_type}')
 
         y = self.wavelet_weights(wavelet.flatten(1, 2))
         y = self.wavelet_out(y)
@@ -398,44 +401,46 @@ class WavKANConvNDLayer(nn.Module):
         )
         self.base_conv = nn.ModuleList([base_conv] * groups)
 
-        if wavlet_version == 'base':
-            wavelet_conv = WaveletConvND(
-                conv_class=conv_class,
-                ndim=ndim,
-                in_channels=in_channels // groups,
-                out_channels=out_channels // groups,
-                kernel_size=kernel_size,
-                stride=stride,
-                padding=padding,
-                dilation=dilation,
-                wavelet_type=wavelet_type,
-            )
-        elif wavlet_version == 'fast':
-            wavelet_conv = WaveletConvNDFast(
-                conv_class=conv_class,
-                ndim=ndim,
-                in_channels=in_channels // groups,
-                out_channels=out_channels // groups,
-                kernel_size=kernel_size,
-                stride=stride,
-                padding=padding,
-                dilation=dilation,
-                wavelet_type=wavelet_type,
-            )
-        elif wavlet_version == 'fast_plus_one':
-            assert isinstance(padding, (int, tuple))
-            wavelet_conv = WaveletConvNDFastPlusOne(
-                conv_class=conv_class,
-                conv_class_d_plus_one=conv_class_plus1,
-                ndim=ndim,
-                in_channels=in_channels // groups,
-                out_channels=out_channels // groups,
-                kernel_size=kernel_size,
-                stride=stride,
-                padding=padding,
-                dilation=dilation,
-                wavelet_type=wavelet_type,
-            )
+        match wavlet_version:
+            case 'base':
+                wavelet_conv = WaveletConvND(
+                    conv_class=conv_class,
+                    ndim=ndim,
+                    in_channels=in_channels // groups,
+                    out_channels=out_channels // groups,
+                    kernel_size=kernel_size,
+                    stride=stride,
+                    padding=padding,
+                    dilation=dilation,
+                    wavelet_type=wavelet_type,
+                )
+            case 'fast':
+                wavelet_conv = WaveletConvNDFast(
+                    conv_class=conv_class,
+                    ndim=ndim,
+                    in_channels=in_channels // groups,
+                    out_channels=out_channels // groups,
+                    kernel_size=kernel_size,
+                    stride=stride,
+                    padding=padding,
+                    dilation=dilation,
+                    wavelet_type=wavelet_type,
+                )
+            case 'fast_plus_one':
+                if isinstance(padding, str):
+                    raise ValueError('fast_plus_one version does not support string padding.')
+                wavelet_conv = WaveletConvNDFastPlusOne(
+                    conv_class=conv_class,
+                    conv_class_d_plus_one=conv_class_plus1,
+                    ndim=ndim,
+                    in_channels=in_channels // groups,
+                    out_channels=out_channels // groups,
+                    kernel_size=kernel_size,
+                    stride=stride,
+                    padding=padding,
+                    dilation=dilation,
+                    wavelet_type=wavelet_type,
+                )
 
         self.wavelet_conv = nn.ModuleList([wavelet_conv] * groups)
 
