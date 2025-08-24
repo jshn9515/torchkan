@@ -174,7 +174,7 @@ class WaveletConvNDFastPlusOne(WaveletConvND):
     ):
         super(WaveletConvND, self).__init__()
 
-        assert ndim < 3, 'fast_plus_one version suppoerts only 1D and 2D convs'
+        assert ndim < 3, 'fast_plus_one version supports only 1D and 2D convs'
 
         shapes = (1, out_channels, in_channels) + (1,) * ndim
 
