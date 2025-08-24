@@ -350,7 +350,7 @@ class WavKANConvNDLayer(nn.Module):
         groups: int = 1,
         base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
         dropout: float = 0.0,
-        wavlet_version: str = 'base',
+        wavlet_version: WaveletVersion = 'base',
         wavelet_type: WaveletType = 'mexican_hat',
         **norm_kwargs,
     ):
