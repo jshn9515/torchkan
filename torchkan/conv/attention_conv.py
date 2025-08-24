@@ -104,6 +104,7 @@ def compute_axial_cis(dim: int, end_x: int, end_y: int, theta: float = 100.0) ->
 def reshape_for_broadcast(freqs_cis: Tensor, x: Tensor) -> Tensor:
     ndim = x.ndim
     assert 0 <= 1 < ndim
+    shape = freqs_cis.shape
     if freqs_cis.shape == (x.shape[-2], x.shape[-1]):
         shape = [d if i >= ndim - 2 else 1 for i, d in enumerate(x.shape)]
     elif freqs_cis.shape == (x.shape[-3], x.shape[-2], x.shape[-1]):
