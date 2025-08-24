@@ -9,7 +9,7 @@ description = "Kolmogorov–Arnold Networks (KAN) module for PyTorch"
 authors = [{name = "Ivan Drokin"}]
 maintainers = [{name = "jshn9515", email = "jshn9510@gmail.com"}]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT"
 keywords = [
     "computer-vision",
@@ -21,7 +21,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
