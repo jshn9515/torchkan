@@ -6,13 +6,24 @@ class SelfSpatialNorm(nn.Module):
     def __init__(self, num_channels: int, num_groups: int = 16, affine: bool = True):
         super().__init__()
         self.norm_layer = nn.GroupNorm(
-            num_channels=num_channels, num_groups=num_groups, eps=1e-6, affine=affine
+            num_groups,
+            num_channels,
+            eps=1e-6,
+            affine=affine,
         )
         self.conv_y = nn.Conv2d(
-            num_channels, num_channels, kernel_size=1, stride=1, padding=0
+            num_channels,
+            num_channels,
+            kernel_size=1,
+            stride=1,
+            padding=0,
         )
         self.conv_b = nn.Conv2d(
-            num_channels, num_channels, kernel_size=1, stride=1, padding=0
+            num_channels,
+            num_channels,
+            kernel_size=1,
+            stride=1,
+            padding=0,
         )
 
     def forward(self, f: Tensor) -> Tensor:
@@ -31,13 +42,24 @@ class SpatialNorm(nn.Module):
     ):
         super().__init__()
         self.norm_layer = nn.GroupNorm(
-            num_channels=num_channels, num_groups=num_groups, eps=1e-6, affine=affine
+            num_groups,
+            num_channels,
+            eps=1e-6,
+            affine=affine,
         )
         self.conv_y = nn.Conv2d(
-            num_channels_cond, num_channels, kernel_size=1, stride=1, padding=0
+            num_channels_cond,
+            num_channels,
+            kernel_size=1,
+            stride=1,
+            padding=0,
         )
         self.conv_b = nn.Conv2d(
-            num_channels_cond, num_channels, kernel_size=1, stride=1, padding=0
+            num_channels_cond,
+            num_channels,
+            kernel_size=1,
+            stride=1,
+            padding=0,
         )
 
     def forward(self, f: Tensor, c: Tensor) -> Tensor:
