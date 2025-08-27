@@ -105,8 +105,8 @@ class KACNConvNDLayer(nn.Module):
     def forward(self, x: Tensor) -> Tensor:
         split_x = torch.split(x, self.in_channels // self.groups, dim=1)
         output = []
-        for group_inddx, x in enumerate(split_x):
-            y = self.forward_kacn(x, group_inddx)
+        for group_index, x in enumerate(split_x):
+            y = self.forward_kacn(x, group_index)
             output.append(y)
         y = torch.concat(output, dim=1)
         return y
