@@ -1,10 +1,16 @@
-from typing import Literal
-
 import torch
 import torch.nn as nn
 from torch import Tensor
 
-PaddingType = Literal['valid', 'same']
+from torchkan.utils.typing import (
+    Padding1D,
+    Padding2D,
+    Padding3D,
+    PaddingND,
+    Size2D,
+    Size3D,
+    SizeND,
+)
 
 
 class KACNConvNDLayer(nn.Module):
@@ -16,10 +22,10 @@ class KACNConvNDLayer(nn.Module):
         in_channels: int,
         out_channels: int,
         spline_order: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
         dropout: float = 0.0,
         **norm_kwargs,
@@ -117,10 +123,10 @@ class KACNConv3DLayer(KACNConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int, int],
-        stride: int | tuple[int, int, int] = 1,
-        padding: PaddingType | int | tuple[int, int, int] = 0,
-        dilation: int | tuple[int, int, int] = 1,
+        kernel_size: Size3D,
+        stride: Size3D = 1,
+        padding: Padding3D = 0,
+        dilation: Size3D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -148,10 +154,10 @@ class KACNConv2DLayer(KACNConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = 1,
-        padding: PaddingType | int | tuple[int, int] = 0,
-        dilation: int | tuple[int, int] = 1,
+        kernel_size: Size2D,
+        stride: Size2D = 1,
+        padding: Padding2D = 0,
+        dilation: Size2D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -181,7 +187,7 @@ class KACNConv1DLayer(KACNConvNDLayer):
         out_channels: int,
         kernel_size: int,
         stride: int = 1,
-        padding: PaddingType | int = 0,
+        padding: Padding1D = 0,
         dilation: int = 1,
         groups: int = 1,
         spline_order: int = 3,

@@ -1,14 +1,23 @@
 # Based on this: https://github.com/Khochawongwat/GRAMKAN/blob/main/model.py
 
 from functools import lru_cache
-from typing import Callable, Literal
+from typing import Callable
 
 import torch
 import torch.nn as nn
 from torch import Tensor
 from torch.nn.functional import conv1d, conv2d, conv3d
 
-PaddingType = Literal['valid', 'same']
+from torchkan.utils.typing import (
+    Activation,
+    Padding1D,
+    Padding2D,
+    Padding3D,
+    PaddingND,
+    Size2D,
+    Size3D,
+    SizeND,
+)
 
 
 class KAGNConvNDLayerV2(nn.Module):
@@ -16,17 +25,17 @@ class KAGNConvNDLayerV2(nn.Module):
         self,
         conv_class: type[nn.Module],
         norm_class: type[nn.Module],
-        conv_w_fun: Callable,
+        conv_w_fun: Callable[..., Tensor],
         ndim: int,
         in_channels: int,
         out_channels: int,
         spline_order: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -166,10 +175,10 @@ class KAGNConv3DLayerV2(KAGNConvNDLayerV2):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int, int],
-        stride: int | tuple[int, int, int] = 1,
-        padding: PaddingType | int | tuple[int, int, int] = 0,
-        dilation: int | tuple[int, int, int] = 1,
+        kernel_size: Size3D,
+        stride: Size3D = 1,
+        padding: Padding3D = 0,
+        dilation: Size3D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -198,10 +207,10 @@ class KAGNConv2DLayerV2(KAGNConvNDLayerV2):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = 1,
-        padding: PaddingType | int | tuple[int, int] = 0,
-        dilation: int | tuple[int, int] = 1,
+        kernel_size: Size2D,
+        stride: Size2D = 1,
+        padding: Padding2D = 0,
+        dilation: Size2D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -232,7 +241,7 @@ class KAGNConv1DLayerV2(KAGNConvNDLayerV2):
         out_channels: int,
         kernel_size: int,
         stride: int = 1,
-        padding: PaddingType | int = 0,
+        padding: Padding1D = 0,
         dilation: int = 1,
         groups: int = 1,
         spline_order: int = 3,

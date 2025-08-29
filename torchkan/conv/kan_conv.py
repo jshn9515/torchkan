@@ -1,10 +1,17 @@
-from typing import Callable, Literal
-
 import torch
 import torch.nn as nn
 from torch import Tensor
 
-PaddingType = Literal['valid', 'same']
+from torchkan.utils.typing import (
+    Activation,
+    Padding1D,
+    Padding2D,
+    Padding3D,
+    PaddingND,
+    Size2D,
+    Size3D,
+    SizeND,
+)
 
 
 class KANConvNDLayer(nn.Module):
@@ -16,14 +23,14 @@ class KANConvNDLayer(nn.Module):
         in_channels: int,
         out_channels: int,
         spline_order: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
         grid_size: int = 5,
         grid_range: tuple[float, float] = (-1.0, 1.0),
-        base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
+        base_activation: Activation = nn.GELU(),
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -159,15 +166,15 @@ class KANConv3DLayer(KANConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int, int],
-        stride: int | tuple[int, int, int] = 1,
-        padding: PaddingType | int | tuple[int, int, int] = 0,
-        dilation: int | tuple[int, int, int] = 1,
+        kernel_size: Size3D,
+        stride: Size3D = 1,
+        padding: Padding3D = 0,
+        dilation: Size3D = 1,
         groups: int = 1,
         spline_order: int = 3,
         grid_size: int = 5,
         grid_range: tuple[float, float] = (-1.0, 1.0),
-        base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
+        base_activation: Activation = nn.GELU(),
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -196,15 +203,15 @@ class KANConv2DLayer(KANConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = 1,
-        padding: PaddingType | int | tuple[int, int] = 0,
-        dilation: int | tuple[int, int] = 1,
+        kernel_size: Size2D,
+        stride: Size2D = 1,
+        padding: Padding2D = 0,
+        dilation: Size2D = 1,
         groups: int = 1,
         spline_order: int = 3,
         grid_size: int = 5,
         grid_range: tuple[float, float] = (-1.0, 1.0),
-        base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
+        base_activation: Activation = nn.GELU(),
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -235,13 +242,13 @@ class KANConv1DLayer(KANConvNDLayer):
         out_channels: int,
         kernel_size: int,
         stride: int = 1,
-        padding: PaddingType | int = 0,
+        padding: Padding1D = 0,
         dilation: int = 1,
         groups: int = 1,
         spline_order: int = 3,
         grid_size: int = 5,
         grid_range: tuple[float, float] = (-1.0, 1.0),
-        base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
+        base_activation: Activation = nn.GELU(),
         dropout: float = 0.0,
         **norm_kwargs,
     ):

@@ -1,7 +1,7 @@
 # Based on this: https://github.com/Khochawongwat/GRAMKAN/blob/main/model.py
 
 from functools import lru_cache
-from typing import Callable, Literal
+from typing import Callable
 
 import torch
 import torch.nn as nn
@@ -13,7 +13,16 @@ from ..linear import GRAMLayer
 from ..utils import NoiseInjection
 from .moe_utils import SparseDispatcher
 
-PaddingType = Literal['valid', 'same']
+from torchkan.utils.typing import (
+    Activation,
+    Padding1D,
+    Padding2D,
+    Padding3D,
+    PaddingND,
+    Size2D,
+    Size3D,
+    SizeND,
+)
 
 
 class BottleNeckKAGNConvNDLayer(nn.Module):
@@ -21,17 +30,17 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         self,
         conv_class: type[nn.Module],
         norm_class: type[nn.Module],
-        conv_w_fun: Callable,
+        conv_w_fun: Callable[..., Tensor],
         ndim: int,
         in_channels: int,
         out_channels: int,
         spline_order: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         dropout: float = 0.0,
         dim_reduction: float = 4.0,
         min_internal: int = 16,
@@ -219,10 +228,10 @@ class BottleNeckKAGNConv3DLayer(BottleNeckKAGNConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int, int],
-        stride: int | tuple[int, int, int] = 1,
-        padding: PaddingType | int | tuple[int, int, int] = 0,
-        dilation: int | tuple[int, int, int] = 1,
+        kernel_size: Size3D,
+        stride: Size3D = 1,
+        padding: Padding3D = 0,
+        dilation: Size3D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -253,10 +262,10 @@ class BottleNeckKAGNConv2DLayer(BottleNeckKAGNConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = 1,
-        padding: PaddingType | int | tuple[int, int] = 0,
-        dilation: int | tuple[int, int] = 1,
+        kernel_size: Size2D,
+        stride: Size2D = 1,
+        padding: Padding2D = 0,
+        dilation: Size2D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -289,7 +298,7 @@ class BottleNeckKAGNConv1DLayer(BottleNeckKAGNConvNDLayer):
         out_channels: int,
         kernel_size: int,
         stride: int = 1,
-        padding: PaddingType | int = 0,
+        padding: Padding1D = 0,
         dilation: int = 1,
         groups: int = 1,
         spline_order: int = 3,
@@ -319,17 +328,17 @@ class BottleNeckKAGNConv1DLayer(BottleNeckKAGNConvNDLayer):
 class KAGNExpert(nn.Module):
     def __init__(
         self,
-        conv_w_fun: Callable,
+        conv_w_fun: Callable[..., Tensor],
         ndim: int,
         in_channels: int,
         out_channels: int,
         spline_order: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         dropout: float = 0.0,
     ):
         super(KAGNExpert, self).__init__()
@@ -443,10 +452,10 @@ class KAGNMoE(nn.Module):
         in_channels: int,
         out_channels: int,
         spline_order: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
         dropout: float = 0.0,
         k: int = 4,
@@ -538,7 +547,7 @@ class KAGNMoE(nn.Module):
             torch.gather(top_values_flat, 0, threshold_positions_if_out), dim=1
         )
         # is each value currently in the top k.
-        normal = Normal(loc=self.mean, scale=self.std)
+        normal = Normal(loc=self.mean, scale=self.std)  # type: ignore
         prob_if_in = normal.cdf((clean_values - threshold_if_in) / noise_stddev)
         prob_if_out = normal.cdf((clean_values - threshold_if_out) / noise_stddev)
         prob = torch.where(is_in, prob_if_in, prob_if_out)
@@ -605,15 +614,15 @@ class MoEBottleNeckKAGNConvND(nn.Module):
         self,
         conv_class: type[nn.Module],
         norm_class: type[nn.Module],
-        conv_w_fun: Callable,
+        conv_w_fun: Callable[..., Tensor],
         ndim: int,
         in_channels: int,
         out_channels: int,
         spline_order: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
         num_experts: int = 16,
         noisy_gating: bool = True,
@@ -621,7 +630,7 @@ class MoEBottleNeckKAGNConvND(nn.Module):
         dim_reduction: float = 4,
         min_internal: int = 16,
         pregate: bool = False,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         dropout: float = 0.0,
         **norm_kwargs,
     ):
@@ -779,10 +788,10 @@ class MoEBottleNeckKAGNConv3DLayer(MoEBottleNeckKAGNConvND):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int, int],
-        stride: int | tuple[int, int, int] = 1,
-        padding: PaddingType | int | tuple[int, int, int] = 0,
-        dilation: int | tuple[int, int, int] = 1,
+        kernel_size: Size3D,
+        stride: Size3D = 1,
+        padding: Padding3D = 0,
+        dilation: Size3D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -821,10 +830,10 @@ class MoEBottleNeckKAGNConv2DLayer(MoEBottleNeckKAGNConvND):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = 1,
-        padding: PaddingType | int | tuple[int, int] = 0,
-        dilation: int | tuple[int, int] = 1,
+        kernel_size: Size2D,
+        stride: Size2D = 1,
+        padding: Padding2D = 0,
+        dilation: Size2D = 1,
         groups: int = 1,
         spline_order: int = 3,
         dropout: float = 0.0,
@@ -865,7 +874,7 @@ class MoEBottleNeckKAGNConv1DLayer(MoEBottleNeckKAGNConvND):
         out_channels: int,
         kernel_size: int,
         stride: int = 1,
-        padding: PaddingType | int = 0,
+        padding: Padding1D = 0,
         dilation: int = 1,
         groups: int = 1,
         spline_order: int = 3,

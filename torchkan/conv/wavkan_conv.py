@@ -6,20 +6,27 @@ Bozorgasl, Zavareh and Chen, Hao, Wav-KAN: Wavelet Kolmogorov-Arnold Networks (M
 https://arxiv.org/abs/2405.12832
 and also available at:
 https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4835325
-We used efficient KAN notation and some part of the code:https://github.com/Blealtan/efficient-kan
-
+We used efficient KAN notation and some part of the code: https://github.com/Blealtan/efficient-kan
 """
 
 import math
-from typing import Callable, Literal
 
 import torch
 import torch.nn as nn
 from torch import Tensor
 
-PaddingType = Literal['valid', 'same']
-WaveletType = Literal['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon']
-WaveletVersion = Literal['base', 'fast', 'fast_plus_one']
+from torchkan.utils.typing import (
+    Activation,
+    Padding1D,
+    Padding2D,
+    Padding3D,
+    PaddingND,
+    Size2D,
+    Size3D,
+    SizeND,
+    WaveletType,
+    WaveletVersion,
+)
 
 
 class WaveletConvND(nn.Module):
@@ -29,10 +36,10 @@ class WaveletConvND(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         wavelet_type: WaveletType = 'mexican_hat',
     ):
         super(WaveletConvND, self).__init__()
@@ -107,7 +114,9 @@ class WaveletConvND(nn.Module):
                 v <= 1 / 2,
                 torch.ones_like(v),
                 torch.where(
-                    v >= 1, torch.zeros_like(v), torch.cos(math.pi / 2 * nu(2 * v - 1))
+                    v >= 1,
+                    torch.zeros_like(v),
+                    torch.cos(math.pi / 2 * nu(2 * v - 1)),
                 ),
             )
 
@@ -167,10 +176,10 @@ class WaveletConvNDFastPlusOne(WaveletConvND):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         wavelet_type: WaveletType = 'mexican_hat',
     ):
         super(WaveletConvND, self).__init__()
@@ -266,10 +275,10 @@ class WaveletConvNDFast(WaveletConvND):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         wavelet_type: WaveletType = 'mexican_hat',
     ):
         super(WaveletConvND, self).__init__()
@@ -346,12 +355,12 @@ class WavKANConvNDLayer(nn.Module):
         ndim: int,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, ...],
-        stride: int | tuple[int, ...],
-        padding: PaddingType | int | tuple[int, ...],
-        dilation: int | tuple[int, ...],
+        kernel_size: SizeND,
+        stride: SizeND,
+        padding: PaddingND,
+        dilation: SizeND,
         groups: int = 1,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         dropout: float = 0.0,
         wavlet_version: WaveletVersion = 'base',
         wavelet_type: WaveletType = 'mexican_hat',
@@ -428,7 +437,9 @@ class WavKANConvNDLayer(nn.Module):
                 )
             case 'fast_plus_one':
                 if isinstance(padding, str):
-                    raise ValueError('fast_plus_one version does not support string padding.')
+                    raise ValueError(
+                        'fast_plus_one version does not support string padding.'
+                    )
                 wavelet_conv = WaveletConvNDFastPlusOne(
                     conv_class=conv_class,
                     conv_class_d_plus_one=conv_class_plus1,
@@ -477,10 +488,10 @@ class WavKANConv3DLayer(WavKANConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int, int],
-        stride: int | tuple[int, int, int] = 1,
-        padding: PaddingType | int | tuple[int, int, int] = 0,
-        dilation: int | tuple[int, int, int] = 1,
+        kernel_size: Size3D,
+        stride: Size3D = 1,
+        padding: Padding3D = 0,
+        dilation: Size3D = 1,
         groups: int = 1,
         dropout: float = 0.0,
         wavelet_type: WaveletType = 'mexican_hat',
@@ -511,10 +522,10 @@ class WavKANConv2DLayer(WavKANConvNDLayer):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: int | tuple[int, int],
-        stride: int | tuple[int, int] = 1,
-        padding: PaddingType | int | tuple[int, int] = 0,
-        dilation: int | tuple[int, int] = 1,
+        kernel_size: Size2D,
+        stride: Size2D = 1,
+        padding: Padding2D = 0,
+        dilation: Size2D = 1,
         groups: int = 1,
         dropout: float = 0.0,
         wavelet_type: WaveletType = 'mexican_hat',
@@ -547,7 +558,7 @@ class WavKANConv1DLayer(WavKANConvNDLayer):
         out_channels: int,
         kernel_size: int,
         stride: int = 1,
-        padding: PaddingType | int = 0,
+        padding: Padding1D = 0,
         dilation: int = 1,
         groups: int = 1,
         dropout: float = 0.0,

@@ -21,7 +21,6 @@
 
 import math
 from functools import lru_cache
-from typing import Callable, Literal
 
 import torch
 import torch.nn as nn
@@ -30,7 +29,7 @@ from torch import Tensor
 
 from .utils import RadialBasisFunction
 
-WaveletType = Literal['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon']
+from torchkan.utils.typing import Activation, WaveletType
 
 
 class KANLayer(nn.Module):
@@ -40,7 +39,7 @@ class KANLayer(nn.Module):
         out_features: int,
         grid_size: int = 5,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
+        base_activation: Activation = nn.GELU(),
         grid_range: tuple[float, float] = (-1.0, 1.0),
     ):
         super(KANLayer, self).__init__()
@@ -127,7 +126,7 @@ class KALNLayer(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         in_features: int,
         out_features: int,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
     ):
         super(KALNLayer, self).__init__()  # Initialize the parent nn.Module class
 
@@ -210,7 +209,7 @@ class FastKANLayer(nn.Module):
         grid_max: float = 2.0,
         num_grids: int = 8,
         use_base_update: bool = True,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         spline_weight_init_scale: float = 0.1,
     ):
         super(FastKANLayer, self).__init__()
@@ -280,7 +279,7 @@ class GRAMLayer(nn.Module):
         in_features: int,
         out_features: int,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
     ):
         super(GRAMLayer, self).__init__()
 
@@ -468,7 +467,7 @@ class JacobiKANLayer(nn.Module):
         spline_order: int,
         a: float = 1.0,
         b: float = 1.0,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
     ):
         super(JacobiKANLayer, self).__init__()
         self.in_features = in_features
@@ -544,7 +543,7 @@ class BernsteinKANLayer(nn.Module):
         in_features: int,
         out_features: int,
         spline_order: int,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
     ):
         super(BernsteinKANLayer, self).__init__()
         self.in_features = in_features
@@ -641,7 +640,7 @@ class BottleNeckGRAMLayer(nn.Module):
         in_features: int,
         out_features: int,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         dim_reduction: float = 8,
         min_internal: int = 16,
     ):

@@ -20,7 +20,6 @@
 # and https://github.com/quiqi/relu_kan/issues/2
 
 import itertools
-from typing import Callable, Literal
 
 import torch.nn as nn
 from torch import Tensor
@@ -39,7 +38,7 @@ from .layers import (
     WavKANLayer,
 )
 
-WaveletType = Literal['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon']
+from torchkan.utils.typing import Activation, WaveletType
 
 
 class KAN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
@@ -49,7 +48,7 @@ class KAN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         dropout: float = 0.0,
         grid_size: int = 5,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.GELU(),
+        base_activation: Activation = nn.GELU(),
         grid_range: tuple[float, float] = (-1.0, 1.0),
         l1_decay: float = 0.0,
         first_dropout: bool = False,
@@ -102,7 +101,7 @@ class KALN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         dropout: float = 0.0,
         l1_decay: float = 0.0,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         first_dropout: bool = False,
     ):
         super(KALN, self).__init__()  # Initialize the parent nn.Module class
@@ -149,7 +148,7 @@ class FastKAN(nn.Module):
         grid_range: tuple[float, float] = (-2.0, 2.0),
         grid_size: int = 8,
         use_base_update: bool = True,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         spline_weight_init_scale: float = 0.1,
         first_dropout: bool = False,
     ):
@@ -238,7 +237,7 @@ class KAGN(nn.Module):
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         l1_decay: float = 0.0,
         first_dropout: bool = False,
     ):
@@ -284,7 +283,7 @@ class BottleNeckKAGN(nn.Module):
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         l1_decay: float = 0.0,
         first_dropout: bool = True,
         dim_reduction: float = 8.0,
@@ -334,7 +333,7 @@ class KABN(nn.Module):
         hidden_layers: tuple[int, ...],
         dropout: float = 0.0,
         spline_order: int = 3,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         l1_decay: float = 0.0,
         first_dropout: bool = False,
     ):
@@ -383,7 +382,7 @@ class KAJN(nn.Module):
         spline_order: int = 3,
         a: float = 1,
         b: float = 1,
-        base_activation: Callable[[Tensor], Tensor] = nn.SiLU(),
+        base_activation: Activation = nn.SiLU(),
         first_dropout: bool = False,
     ):
         super(KAJN, self).__init__()  # Initialize the parent nn.Module class
