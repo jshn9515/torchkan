@@ -172,14 +172,14 @@ class SelfKANtentionND(nn.Module):
         self.outer_proj = None
         if inner_projection is not None:
             if self.ndim == 1:
-                self.inner_proj = nn.Conv1d(input_dim, inner_projection, 1)
-                self.outer_proj = nn.Conv1d(inner_projection, input_dim, 1)
+                self.inner_proj = nn.Conv1d(input_dim, inner_projection, kernel_size=1)
+                self.outer_proj = nn.Conv1d(inner_projection, input_dim, kernel_size=1)
             if self.ndim == 2:
-                self.inner_proj = nn.Conv2d(input_dim, inner_projection, 1)
-                self.outer_proj = nn.Conv2d(inner_projection, input_dim, 1)
+                self.inner_proj = nn.Conv2d(input_dim, inner_projection, kernel_size=1)
+                self.outer_proj = nn.Conv2d(inner_projection, input_dim, kernel_size=1)
             if self.ndim == 3:
-                self.inner_proj = nn.Conv3d(input_dim, inner_projection, 1)
-                self.outer_proj = nn.Conv3d(inner_projection, input_dim, 1)
+                self.inner_proj = nn.Conv3d(input_dim, inner_projection, kernel_size=1)
+                self.outer_proj = nn.Conv3d(inner_projection, input_dim, kernel_size=1)
 
         num_channels = input_dim if inner_projection is None else inner_projection
         self.num_channels = num_channels
