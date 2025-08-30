@@ -373,10 +373,6 @@ class WavKANConvNDLayer(nn.Module):
         self.groups = groups
         self.ndim = ndim
         self.norm_kwargs = norm_kwargs
-
-        assert wavelet_type in ['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon'], (
-            ValueError(f'Unsupported wavelet type: {wavelet_type}')
-        )
         self.wavelet_type = wavelet_type
 
         self.dropout = None
