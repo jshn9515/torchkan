@@ -83,6 +83,8 @@ class MoEKANConvBase(nn.Module):
         elif name.endswith('3DLayer'):
             self.avgpool = nn.AdaptiveAvgPool3d(1)
             self.conv_dims = 3
+        else:
+            raise ValueError('Unsupported dimention of conv_class.')
 
         for i in range(1, num_experts):
             self.experts[i].load_state_dict(self.experts[0].state_dict())
@@ -131,6 +133,8 @@ class MoEKANConvBase(nn.Module):
 
     def noisy_top_k_gating(self, x: Tensor, train: bool, noise_epsilon: float = 1e-2):
         clean_logits = x @ self.w_gate
+        noisy_logits = torch.tensor(0.0)
+        noise_stddev = torch.tensor(0.0)
         if self.noisy_gating and train:
             raw_noise_stddev = x @ self.w_noise
             noise_stddev = self.softplus(raw_noise_stddev) + noise_epsilon

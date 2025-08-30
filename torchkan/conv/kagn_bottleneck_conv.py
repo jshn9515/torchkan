@@ -512,6 +512,9 @@ class KAGNMoE(nn.Module):
         elif ndim == 3:
             self.avgpool = nn.AdaptiveAvgPool3d(1)
             self.conv_dims = 3
+        else:
+            raise ValueError(f'ndim must be 1, 2, or 3, but got {ndim}.')
+
         assert self.k <= self.num_experts
 
     def cv_squared(self, x: Tensor) -> Tensor:
@@ -539,7 +542,7 @@ class KAGNMoE(nn.Module):
             torch.arange(batch, device=clean_values.device) * m + self.k
         )
         threshold_if_in = torch.unsqueeze(
-            torch.gather(top_values_flat, 0, threshold_positions_if_in), 1
+            torch.gather(top_values_flat, 0, threshold_positions_if_in), dim=1
         )
         is_in = torch.gt(noisy_values, threshold_if_in)
         threshold_positions_if_out = threshold_positions_if_in - 1
@@ -557,6 +560,8 @@ class KAGNMoE(nn.Module):
         self, x: Tensor, train: bool, noise_epsilon: float = 1e-2
     ) -> tuple[Tensor, Tensor]:
         clean_logits = x @ self.w_gate
+        noisy_logits = torch.tensor(0.0)
+        noise_stddev = torch.tensor(0.0)
         if self.noisy_gating and train:
             raw_noise_stddev = x @ self.w_noise
             noise_stddev = self.softplus(raw_noise_stddev) + noise_epsilon
@@ -775,7 +780,7 @@ class MoEBottleNeckKAGNConvND(nn.Module):
         y, loss = self.experts.forward(torch.concat(output, dim=1), loss_coef=loss_coef)
         output = []
         for group_index, (xb, xe) in enumerate(
-            zip(bases, torch.split(y, self.inner_channels, dim=1), strict=True)
+            zip(bases, torch.split(y, self.inner_channels, dim=1), strict=True,)
         ):
             y = self.forward_moe_outer(xe, xb, group_index=group_index)
             output.append(y)

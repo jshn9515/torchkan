@@ -143,32 +143,28 @@ class SelfKANtentionND(nn.Module):
         super().__init__()
         self.ndim = None
         self.input_dim = input_dim
-        self.norm_layer = norm_layer
-        affine = True
-        if 'affine' in kwargs:
-            affine = kwargs.pop('affine')
-
-        kernel_size = kwargs.pop('kernel_size')
+        self.kernel_size = kwargs.pop('kernel_size')
+        self.affine = kwargs.pop('affine') if 'affine' in kwargs else True
 
         name = conv_class.__name__
         if name.endswith('1DLayer'):
             self.ndim = 1
-            if self.norm_layer is None:
+            if norm_layer is None:
                 self.norm_layer = nn.BatchNorm1d(input_dim)
             else:
-                self.norm_layer = self.norm_layer(input_dim, affine=affine)
+                self.norm_layer = norm_layer(input_dim, affine=self.affine)
         elif name.endswith('2DLayer'):
             self.ndim = 2
-            if self.norm_layer is None:
+            if norm_layer is None:
                 self.norm_layer = nn.BatchNorm2d(input_dim)
             else:
-                self.norm_layer = self.norm_layer(input_dim, affine=affine)
+                self.norm_layer = norm_layer(input_dim, affine=self.affine)
         elif name.endswith('3DLayer'):
             self.ndim = 3
-            if self.norm_layer is None:
+            if norm_layer is None:
                 self.norm_layer = nn.BatchNorm3d(input_dim)
             else:
-                self.norm_layer = self.norm_layer(input_dim, affine=affine)
+                self.norm_layer = norm_layer(input_dim, affine=self.affine)
         else:
             raise ValueError('Unsupported dimention of conv_class.')
 
@@ -191,19 +187,19 @@ class SelfKANtentionND(nn.Module):
         self.proj_k = conv_class(
             in_channels=num_channels,
             out_channels=num_channels,
-            kernel_size=kernel_size,
+            kernel_size=self.kernel_size,
             **kwargs,
         )
         self.proj_q = conv_class(
             in_channels=num_channels,
             out_channels=num_channels,
-            kernel_size=kernel_size,
+            kernel_size=self.kernel_size,
             **kwargs,
         )
         self.proj_v = conv_class(
             in_channels=num_channels,
             out_channels=num_channels,
-            kernel_size=kernel_size,
+            kernel_size=self.kernel_size,
             **kwargs,
         )
 
@@ -227,10 +223,7 @@ class SelfKANtentionND(nn.Module):
         return out
 
     def forward(self, x: Tensor) -> Tensor:
-        if self.inner_proj is not None:
-            att = self.inner_proj(x)
-        else:
-            att = x
+        att = self.inner_proj(x) if self.inner_proj is not None else x
 
         q = self.proj_q(att)
         k = self.proj_k(att)
@@ -241,7 +234,6 @@ class SelfKANtentionND(nn.Module):
         if self.inner_proj is not None and self.outer_proj is not None:
             att = self.outer_proj(att)
 
-        assert isinstance(self.norm_layer, nn.Module)
         return self.norm_layer(self.gamma * x + att)
 
 
@@ -256,9 +248,12 @@ class RoPESelfKANtentionND(SelfKANtentionND):
             self.compute_cis = partial(compute_mixed_cis, num_heads=1)
 
             freqs = init_2d_freqs(
-                dim=self.num_channels, num_heads=1, theta=rope_theta, rotate=True
-            ).view(2, -1)
-            self.freqs = nn.Parameter(freqs, requires_grad=True)
+                dim=self.num_channels,
+                num_heads=1,
+                theta=rope_theta,
+                rotate=True,
+            )
+            self.freqs = nn.Parameter(freqs.view(2, -1), requires_grad=True)
 
             t_x, t_y = init_t_xy(end_x=14, end_y=14)
             self.freqs_t_x = t_x
@@ -275,12 +270,8 @@ class RoPESelfKANtentionND(SelfKANtentionND):
         m_batchsize = input_shape[0]
         total_pixels = math.prod(input_shape[2:])
 
-        proj_query = q.view(m_batchsize, -1, total_pixels).permute(
-            0, 2, 1
-        )  # B X C X(N)
-        proj_key = k.view(m_batchsize, -1, total_pixels).permute(
-            0, 2, 1
-        )  # B X C x (*W*H)
+        proj_query = q.view(m_batchsize, -1, total_pixels).permute(0, 2, 1)
+        proj_key = k.view(m_batchsize, -1, total_pixels).permute(0, 2, 1)
 
         # Apply rotary position embedding
         w = h = math.sqrt(total_pixels - 1)
@@ -310,7 +301,7 @@ class RoPESelfKANtentionND(SelfKANtentionND):
         proj_value = v.view(m_batchsize, -1, total_pixels)  # B X C X N
 
         out = torch.bmm(proj_value, attention.permute(0, 2, 1))
-        out = out.view(*input_shape)
+        out = out.view(input_shape)
 
         return out
 
