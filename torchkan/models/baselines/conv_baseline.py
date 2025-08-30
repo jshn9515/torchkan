@@ -10,7 +10,7 @@ class SimpleConv(nn.Module):
         input_channels: int = 1,
         groups: int = 1,
     ):
-        super(SimpleConv, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             nn.Conv2d(
                 input_channels,
@@ -78,7 +78,7 @@ class EightSimpleConv(nn.Module):
         input_channels: int = 1,
         groups: int = 1,
     ):
-        super(EightSimpleConv, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             nn.Conv2d(
                 input_channels,

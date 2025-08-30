@@ -20,7 +20,7 @@ class SimpleConvKALN(nn.Module):
         l1_penalty: float = 0.0,
         affine: bool = True,
     ):
-        super(SimpleConvKALN, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             KALNConv2DLayer(
                 input_channels,
@@ -114,7 +114,7 @@ class EightSimpleConvKALN(nn.Module):
         l1_penalty: float = 0.0,
         affine: bool = True,
     ):
-        super(EightSimpleConvKALN, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             KALNConv2DLayer(
                 input_channels,

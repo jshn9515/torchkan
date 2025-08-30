@@ -20,7 +20,7 @@ class SimpleFastConvKAN(nn.Module):
         l1_penalty: float = 0.0,
         affine: bool = True,
     ):
-        super(SimpleFastConvKAN, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             FastKANConv2DLayer(
                 input_channels,
@@ -114,7 +114,7 @@ class EightSimpleFastConvKAN(nn.Module):
         l1_penalty: float = 0.0,
         affine: bool = True,
     ):
-        super(EightSimpleFastConvKAN, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             FastKANConv2DLayer(
                 input_channels,

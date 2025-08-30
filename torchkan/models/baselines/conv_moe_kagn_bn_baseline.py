@@ -23,7 +23,7 @@ class SimpleMoEConvKAGNBN(nn.Module):
         noisy_gating: bool = True,
         k: int = 4,
     ):
-        super(SimpleMoEConvKAGNBN, self).__init__()
+        super().__init__()
         self.layers = nn.ModuleList(
             [
                 MoEBottleNeckKAGNConv2DLayer(
@@ -140,7 +140,7 @@ class EightSimpleMoEConvKAGNBN(nn.Module):
         noisy_gating: bool = True,
         k: int = 4,
     ):
-        super(EightSimpleMoEConvKAGNBN, self).__init__()
+        super().__init__()
         self.layers = nn.ModuleList(
             [
                 MoEBottleNeckKAGNConv2DLayer(

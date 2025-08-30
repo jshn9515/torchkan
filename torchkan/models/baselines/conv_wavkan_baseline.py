@@ -23,7 +23,7 @@ class SimpleConvWavKAN(nn.Module):
         dropout_linear: float = 0.0,
         l1_penalty: float = 0.0,
     ):
-        super(SimpleConvWavKAN, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             WavKANConv2DLayer(
                 input_channels,
@@ -112,7 +112,7 @@ class EightSimpleConvWavKAN(nn.Module):
         dropout_linear: float = 0.0,
         l1_penalty: float = 0.0,
     ):
-        super(EightSimpleConvWavKAN, self).__init__()
+        super().__init__()
         self.layers = nn.Sequential(
             WavKANConv2DLayer(
                 input_channels,
