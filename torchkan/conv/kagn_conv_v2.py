@@ -125,24 +125,24 @@ class KAGNConvNDLayerV2(nn.Module):
         ) * self.beta_weights[n]
 
     @lru_cache(maxsize=128)  # Cache to avoid recomputation of Gram polynomials
-    def gram_poly(self, x: Tensor, spline_order: int) -> Tensor:
+    def gram_poly(self, x: Tensor) -> Tensor:
         P0 = x.new_ones(x.size())
 
-        if spline_order == 0:
+        if self.spline_order == 0:
             return torch.unsqueeze(P0, dim=-1)
 
         P1 = x
         grams_basis = [P0, P1]
 
-        for i in range(2, spline_order + 1):
+        for i in range(2, self.spline_order + 1):
             P2 = x * P1 - self.beta(i - 1, i) * P0
             grams_basis.append(P2)
             P0, P1 = P1, P2
 
         indexes = [
-            i * (spline_order + 1) + j
+            i * (self.spline_order + 1) + j
             for i in range(x.shape[1])
-            for j in range(spline_order + 1)
+            for j in range(self.spline_order + 1)
         ]
 
         grams_basis = torch.concat(grams_basis, dim=1)
@@ -159,7 +159,7 @@ class KAGNConvNDLayerV2(nn.Module):
         if self.dropout:
             x = self.dropout(x)
 
-        grams_basis = self.base_activation(self.gram_poly(x, self.spline_order))
+        grams_basis = self.base_activation(self.gram_poly(x))
 
         y = self.poly_conv(grams_basis)
         y = self.base_activation(self.layer_norm(y + basis))
