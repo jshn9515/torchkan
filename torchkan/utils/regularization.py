@@ -9,7 +9,7 @@ from torch import Tensor
 
 class NoiseInjection(nn.Module):
     def __init__(self, p: float = 0.0, alpha: float = 0.05):
-        super(NoiseInjection, self).__init__()
+        super().__init__()
         self.p = p
         self.alpha = alpha
 
@@ -30,7 +30,7 @@ class NoiseInjection(nn.Module):
 
 class NoiseMultiplicativeInjection(nn.Module):
     def __init__(self, p: float = 0.05, alpha: float = 0.05, betta: float = 0.01):
-        super(NoiseMultiplicativeInjection, self).__init__()
+        super().__init__()
         self.p = p
         self.alpha = alpha
         self.betta = betta

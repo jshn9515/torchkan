@@ -53,7 +53,7 @@ class KAN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         l1_decay: float = 0.0,
         first_dropout: bool = False,
     ):
-        super(KAN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
@@ -104,7 +104,7 @@ class KALN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         base_activation: Activation = nn.SiLU(),
         first_dropout: bool = False,
     ):
-        super(KALN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
@@ -152,7 +152,7 @@ class FastKAN(nn.Module):
         spline_weight_init_scale: float = 0.1,
         first_dropout: bool = False,
     ):
-        super(FastKAN, self).__init__()
+        super().__init__()
         self.hidden_layers = hidden_layers
         self.grid_min = grid_range[0]
         self.grid_max = grid_range[1]
@@ -201,7 +201,7 @@ class KACN(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         l1_decay: float = 0.0,
         first_dropout: bool = False,
     ):
-        super(KACN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
@@ -241,7 +241,7 @@ class KAGN(nn.Module):
         l1_decay: float = 0.0,
         first_dropout: bool = False,
     ):
-        super(KAGN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
@@ -289,7 +289,7 @@ class BottleNeckKAGN(nn.Module):
         dim_reduction: float = 8.0,
         min_internal: int = 16,
     ):
-        super(BottleNeckKAGN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
@@ -337,7 +337,7 @@ class KABN(nn.Module):
         l1_decay: float = 0.0,
         first_dropout: bool = False,
     ):
-        super(KABN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
@@ -385,7 +385,7 @@ class KAJN(nn.Module):
         base_activation: Activation = nn.SiLU(),
         first_dropout: bool = False,
     ):
-        super(KAJN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers
@@ -432,7 +432,7 @@ class WavKAN(nn.Module):
         first_dropout: bool = False,
         wavelet_type: WaveletType = 'mexican_hat',
     ):
-        super(WavKAN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         if wavelet_type not in ['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon']:
             raise TypeError(f'Unsupported wavelet type: {wavelet_type}')
@@ -480,7 +480,7 @@ class ReLUKAN(nn.Module):
         train_ab: bool = True,
         first_dropout: bool = True,
     ):
-        super(ReLUKAN, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         # hidden_layers: A list of integers specifying the number of neurons in each layer
         self.hidden_layers = hidden_layers

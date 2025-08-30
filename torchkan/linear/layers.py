@@ -42,7 +42,7 @@ class KANLayer(nn.Module):
         base_activation: Activation = nn.GELU(),
         grid_range: tuple[float, float] = (-1.0, 1.0),
     ):
-        super(KANLayer, self).__init__()
+        super().__init__()
         self.in_features = in_features
         self.out_features = out_features
         # The number of points in the grid for the spline interpolation.
@@ -128,7 +128,7 @@ class KALNLayer(nn.Module):  # Kolmogorov Arnold Legendre Network (KAL-Net)
         spline_order: int = 3,
         base_activation: Activation = nn.SiLU(),
     ):
-        super(KALNLayer, self).__init__()  # Initialize the parent nn.Module class
+        super().__init__()  # Initialize the parent nn.Module class
 
         self.in_features = in_features
         self.out_features = out_features
@@ -212,7 +212,7 @@ class FastKANLayer(nn.Module):
         base_activation: Activation = nn.SiLU(),
         spline_weight_init_scale: float = 0.1,
     ):
-        super(FastKANLayer, self).__init__()
+        super().__init__()
         self.layer_norm = nn.LayerNorm(in_features)
         self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids)
         self.spline_linear = SplineLinear(
@@ -238,7 +238,7 @@ class FastKANLayer(nn.Module):
 # This is inspired by Kolmogorov-Arnold Networks but using Chebyshev polynomials instead of splines coefficients
 class ChebyKANLayer(nn.Module):
     def __init__(self, in_features: int, out_features: int, spline_order: int):
-        super(ChebyKANLayer, self).__init__()
+        super().__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.spline_order = spline_order
@@ -281,7 +281,7 @@ class GRAMLayer(nn.Module):
         spline_order: int = 3,
         base_activation: Activation = nn.SiLU(),
     ):
-        super(GRAMLayer, self).__init__()
+        super().__init__()
 
         self.in_features = in_features
         self.out_features = out_features
@@ -351,7 +351,7 @@ class WavKANLayer(nn.Module):
         out_features: int,
         wavelet_type: WaveletType = 'mexican_hat',
     ):
-        super(WavKANLayer, self).__init__()
+        super().__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.wavelet_type = wavelet_type
@@ -469,7 +469,7 @@ class JacobiKANLayer(nn.Module):
         b: float = 1.0,
         base_activation: Activation = nn.SiLU(),
     ):
-        super(JacobiKANLayer, self).__init__()
+        super().__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.a = a
@@ -545,7 +545,7 @@ class BernsteinKANLayer(nn.Module):
         spline_order: int,
         base_activation: Activation = nn.SiLU(),
     ):
-        super(BernsteinKANLayer, self).__init__()
+        super().__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.spline_order = spline_order
@@ -602,7 +602,7 @@ class ReLUKANLayer(nn.Module):
     def __init__(
         self, in_channels: int, out_channels: int, g: int, k: int, train_ab: bool = True
     ):
-        super(ReLUKANLayer, self).__init__()
+        super().__init__()
         self.g = g
         self.k = k
         self.r = 4 * g * g / ((k + 1) * (k + 1))
@@ -644,7 +644,7 @@ class BottleNeckGRAMLayer(nn.Module):
         dim_reduction: float = 8,
         min_internal: int = 16,
     ):
-        super(BottleNeckGRAMLayer, self).__init__()
+        super().__init__()
 
         self.in_features = in_features
         self.out_features = out_features

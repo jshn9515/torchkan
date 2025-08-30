@@ -46,7 +46,7 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         min_internal: int = 16,
         **norm_kwargs,
     ):
-        super(BottleNeckKAGNConvNDLayer, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.spline_order = spline_order
@@ -238,7 +238,7 @@ class BottleNeckKAGNConv3DLayer(BottleNeckKAGNConvNDLayer):
         dim_reduction: float = 4.0,
         **norm_kwargs,
     ):
-        super(BottleNeckKAGNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             norm_class=nn.InstanceNorm3d,
             conv_w_fun=conv3d,
@@ -272,7 +272,7 @@ class BottleNeckKAGNConv2DLayer(BottleNeckKAGNConvNDLayer):
         dim_reduction: float = 4.0,
         **norm_kwargs,
     ):
-        super(BottleNeckKAGNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             norm_class=nn.InstanceNorm2d,
             conv_w_fun=conv2d,
@@ -306,7 +306,7 @@ class BottleNeckKAGNConv1DLayer(BottleNeckKAGNConvNDLayer):
         dim_reduction: float = 4.0,
         **norm_kwargs,
     ):
-        super(BottleNeckKAGNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             norm_class=nn.InstanceNorm1d,
             conv_w_fun=conv1d,
@@ -341,7 +341,7 @@ class KAGNExpert(nn.Module):
         base_activation: Activation = nn.SiLU(),
         dropout: float = 0.0,
     ):
-        super(KAGNExpert, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.spline_order = spline_order
@@ -462,7 +462,7 @@ class KAGNMoE(nn.Module):
         noisy_gating: bool = True,
         pregate: bool = False,
     ):
-        super(KAGNMoE, self).__init__()
+        super().__init__()
         self.noisy_gating = noisy_gating
         self.num_experts = num_experts
         self.in_channels = in_channels
@@ -634,7 +634,7 @@ class MoEBottleNeckKAGNConvND(nn.Module):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(MoEBottleNeckKAGNConvND, self).__init__()
+        super().__init__()
         self.noisy_gating = noisy_gating
         self.num_experts = num_experts
         self.in_channels = in_channels
@@ -802,7 +802,7 @@ class MoEBottleNeckKAGNConv3DLayer(MoEBottleNeckKAGNConvND):
         pregate: bool = False,
         **norm_kwargs,
     ):
-        super(MoEBottleNeckKAGNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             norm_class=nn.InstanceNorm3d,
             conv_w_fun=conv3d,
@@ -844,7 +844,7 @@ class MoEBottleNeckKAGNConv2DLayer(MoEBottleNeckKAGNConvND):
         pregate: bool = False,
         **norm_kwargs,
     ):
-        super(MoEBottleNeckKAGNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             norm_class=nn.InstanceNorm2d,
             conv_w_fun=conv2d,
@@ -886,7 +886,7 @@ class MoEBottleNeckKAGNConv1DLayer(MoEBottleNeckKAGNConvND):
         pregate: bool = False,
         **norm_kwargs,
     ):
-        super(MoEBottleNeckKAGNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             norm_class=nn.InstanceNorm1d,
             conv_w_fun=conv1d,

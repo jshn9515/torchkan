@@ -30,7 +30,7 @@ class KACNConvNDLayer(nn.Module):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KACNConvNDLayer, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.spline_order = spline_order
@@ -132,7 +132,7 @@ class KACNConv3DLayer(KACNConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KACNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             norm_class=nn.InstanceNorm3d,
             ndim=3,
@@ -163,7 +163,7 @@ class KACNConv2DLayer(KACNConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KACNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             norm_class=nn.InstanceNorm2d,
             ndim=2,
@@ -194,7 +194,7 @@ class KACNConv1DLayer(KACNConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KACNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             norm_class=nn.InstanceNorm1d,
             ndim=1,

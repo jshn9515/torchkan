@@ -42,7 +42,7 @@ class BottleNeckReLUConvNDLayer(nn.Module):
         min_internal: int = 16,
         **norm_kwargs,
     ):
-        super(BottleNeckReLUConvNDLayer, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.g = g
@@ -217,7 +217,7 @@ class BottleNeckReLUKANConv3DLayer(BottleNeckReLUConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(BottleNeckReLUKANConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             norm_class=nn.InstanceNorm3d,
             conv_w_fun=conv3d,
@@ -253,7 +253,7 @@ class BottleNeckReLUKANConv2DLayer(BottleNeckReLUConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(BottleNeckReLUKANConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             norm_class=nn.InstanceNorm2d,
             conv_w_fun=conv2d,
@@ -289,7 +289,7 @@ class BottleNeckReLUKANConv1DLayer(BottleNeckReLUConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(BottleNeckReLUKANConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             norm_class=nn.InstanceNorm1d,
             conv_w_fun=conv1d,

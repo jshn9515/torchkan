@@ -42,7 +42,7 @@ class WaveletConvND(nn.Module):
         dilation: SizeND,
         wavelet_type: WaveletType = 'mexican_hat',
     ):
-        super(WaveletConvND, self).__init__()
+        super().__init__()
 
         shapes = (1, out_channels, in_channels) + (1,) * ndim
 
@@ -183,7 +183,6 @@ class WaveletConvNDFastPlusOne(WaveletConvND):
         wavelet_type: WaveletType = 'mexican_hat',
     ):
         super(WaveletConvND, self).__init__()
-
         assert ndim < 3, 'fast_plus_one version supports only 1D and 2D convs'
 
         shapes = (1, out_channels, in_channels) + (1,) * ndim
@@ -282,7 +281,6 @@ class WaveletConvNDFast(WaveletConvND):
         wavelet_type: WaveletType = 'mexican_hat',
     ):
         super(WaveletConvND, self).__init__()
-
         shapes = (1, out_channels, in_channels) + (1,) * ndim
 
         self.scale = nn.Parameter(torch.ones(shapes))
@@ -366,7 +364,7 @@ class WavKANConvNDLayer(nn.Module):
         wavelet_type: WaveletType = 'mexican_hat',
         **norm_kwargs,
     ):
-        super(WavKANConvNDLayer, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
@@ -498,7 +496,7 @@ class WavKANConv3DLayer(WavKANConvNDLayer):
         wavlet_version: WaveletVersion = 'fast',
         **norm_kwargs,
     ):
-        super(WavKANConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             conv_class_plus1=None,
             norm_class=nn.BatchNorm3d,
@@ -532,7 +530,7 @@ class WavKANConv2DLayer(WavKANConvNDLayer):
         wavlet_version: WaveletVersion = 'fast',
         **norm_kwargs,
     ):
-        super(WavKANConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             conv_class_plus1=nn.Conv3d,
             norm_class=nn.BatchNorm2d,
@@ -566,7 +564,7 @@ class WavKANConv1DLayer(WavKANConvNDLayer):
         wavlet_version: WaveletVersion = 'fast',
         **norm_kwargs,
     ):
-        super(WavKANConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             conv_class_plus1=nn.Conv2d,
             norm_class=nn.BatchNorm1d,

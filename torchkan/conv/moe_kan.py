@@ -44,7 +44,7 @@ class MoEKANConvBase(nn.Module):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKANConvBase, self).__init__()
+        super().__init__()
         self.noisy_gating = noisy_gating
         self.num_experts = num_experts
         self.in_channels = in_channels
@@ -219,7 +219,7 @@ class MoEKALNConv3DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKALNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=KALNConv3DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -246,7 +246,7 @@ class MoEKALNConv2DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKALNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=KALNConv2DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -273,7 +273,7 @@ class MoEKALNConv1DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKALNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=KALNConv1DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -300,7 +300,7 @@ class MoEKANConv3DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKANConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=KANConv3DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -327,7 +327,7 @@ class MoEKANConv2DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKANConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=KANConv2DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -354,7 +354,7 @@ class MoEKANConv1DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKANConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=KANConv1DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -381,7 +381,7 @@ class MoEKAGNConv3DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKAGNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=KAGNConv3DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -408,7 +408,7 @@ class MoEKAGNConv2DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKAGNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=KAGNConv2DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -435,7 +435,7 @@ class MoEKAGNConv1DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKAGNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=KAGNConv1DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -462,7 +462,7 @@ class MoEFastKANConv3DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEFastKANConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=FastKANConv3DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -489,7 +489,7 @@ class MoEFastKANConv2DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEFastKANConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=FastKANConv2DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -516,7 +516,7 @@ class MoEFastKANConv1DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEFastKANConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=FastKANConv1DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -543,7 +543,7 @@ class MoEKACNConv3DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKACNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=KACNConv3DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -570,7 +570,7 @@ class MoEKACNConv2DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKACNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=KACNConv2DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -597,7 +597,7 @@ class MoEKACNConv1DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEKACNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=KACNConv1DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -624,7 +624,7 @@ class MoEWavKANConv3DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEWavKANConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=WavKANConv3DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -651,7 +651,7 @@ class MoEWavKANConv2DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEWavKANConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=WavKANConv2DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -678,7 +678,7 @@ class MoEWavKANConv1DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEWavKANConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=WavKANConv1DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -705,7 +705,7 @@ class MoEFullBottleneckKAGNConv3DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEFullBottleneckKAGNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=BottleNeckKAGNConv3DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -732,7 +732,7 @@ class MoEFullBottleneckKAGNConv2DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEFullBottleneckKAGNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=BottleNeckKAGNConv2DLayer,
             in_channels=in_channels,
             out_channels=out_channels,
@@ -759,7 +759,7 @@ class MoEFullBottleneckKAGNConv1DLayer(MoEKANConvBase):
         k: int = 4,
         **kwargs,
     ):
-        super(MoEFullBottleneckKAGNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=BottleNeckKAGNConv1DLayer,
             in_channels=in_channels,
             out_channels=out_channels,

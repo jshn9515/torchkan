@@ -140,7 +140,7 @@ class SelfKANtentionND(nn.Module):
         inner_projection: int | None = None,
         **kwargs,
     ):
-        super(SelfKANtentionND, self).__init__()
+        super().__init__()
         self.ndim = None
         self.input_dim = input_dim
         self.norm_layer = norm_layer
@@ -368,7 +368,7 @@ class SelfKAGNtention3D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(SelfKAGNtention3D, self).__init__(
+        super().__init__(
             conv_kan_layer=KAGNConv3DLayer,
             norm_layer=nn.BatchNorm3d,
             input_dim=input_dim,
@@ -398,7 +398,7 @@ class SelfKAGNtention2D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(SelfKAGNtention2D, self).__init__(
+        super().__init__(
             conv_kan_layer=KAGNConv2DLayer,
             norm_layer=nn.BatchNorm2d,
             input_dim=input_dim,
@@ -428,7 +428,7 @@ class SelfKAGNtention1D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(SelfKAGNtention1D, self).__init__(
+        super().__init__(
             conv_kan_layer=KAGNConv1DLayer,
             norm_layer=nn.BatchNorm1d,
             input_dim=input_dim,
@@ -458,7 +458,7 @@ class BottleNeckSelfKAGNtention3D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(BottleNeckSelfKAGNtention3D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv3DLayer,
             norm_layer=nn.BatchNorm3d,
             input_dim=input_dim,
@@ -488,7 +488,7 @@ class BottleNeckSelfKAGNtention2D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(BottleNeckSelfKAGNtention2D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv2DLayer,
             norm_layer=nn.BatchNorm2d,
             input_dim=input_dim,
@@ -518,7 +518,7 @@ class BottleNeckSelfKAGNtention1D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(BottleNeckSelfKAGNtention1D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv1DLayer,
             norm_layer=nn.BatchNorm1d,
             input_dim=input_dim,
@@ -550,7 +550,7 @@ class RoPEBottleNeckSelfKAGNtention3D(RoPESelfKANtentionND):
         rope_mixed: bool = True,
         **kwargs,
     ):
-        super(RoPEBottleNeckSelfKAGNtention3D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv3DLayer,
             norm_layer=nn.BatchNorm3d,
             input_dim=input_dim,
@@ -584,7 +584,7 @@ class RoPEBottleNeckSelfKAGNtention2D(RoPESelfKANtentionND):
         rope_mixed: bool = True,
         **kwargs,
     ):
-        super(RoPEBottleNeckSelfKAGNtention2D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv2DLayer,
             norm_layer=nn.BatchNorm2d,
             input_dim=input_dim,
@@ -618,7 +618,7 @@ class RoPEBottleNeckSelfKAGNtention1D(RoPESelfKANtentionND):
         rope_mixed: bool = True,
         **kwargs,
     ):
-        super(RoPEBottleNeckSelfKAGNtention1D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv1DLayer,
             norm_layer=nn.BatchNorm1d,
             input_dim=input_dim,
@@ -652,7 +652,7 @@ class SelfReLUKANtention3D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(SelfReLUKANtention3D, self).__init__(
+        super().__init__(
             conv_kan_layer=ReLUKANConv3DLayer,
             norm_layer=nn.BatchNorm3d,
             input_dim=input_dim,
@@ -686,7 +686,7 @@ class SelfReLUKANtention2D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(SelfReLUKANtention2D, self).__init__(
+        super().__init__(
             conv_kan_layer=ReLUKANConv2DLayer,
             norm_layer=nn.BatchNorm2d,
             input_dim=input_dim,
@@ -720,7 +720,7 @@ class SelfReLUKANtention1D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(SelfReLUKANtention1D, self).__init__(
+        super().__init__(
             conv_kan_layer=ReLUKANConv1DLayer,
             norm_layer=nn.BatchNorm1d,
             input_dim=input_dim,
@@ -754,7 +754,7 @@ class BottleNeckSelfReLUKANtention3D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(BottleNeckSelfReLUKANtention3D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckReLUKANConv3DLayer,
             norm_layer=nn.BatchNorm3d,
             input_dim=input_dim,
@@ -788,7 +788,7 @@ class BottleNeckSelfReLUKANtention2D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(BottleNeckSelfReLUKANtention2D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckReLUKANConv2DLayer,
             norm_layer=nn.BatchNorm2d,
             input_dim=input_dim,
@@ -822,7 +822,7 @@ class BottleNeckSelfReLUKANtention1D(SelfKANtentionND):
         dropout: float = 0.0,
         **kwargs,
     ):
-        super(BottleNeckSelfReLUKANtention1D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckReLUKANConv1DLayer,
             norm_layer=nn.BatchNorm1d,
             input_dim=input_dim,
@@ -1038,7 +1038,7 @@ class BottleNeckKAGNFocalModulation3D(KANFocalModulationND):
     ):
         focal_norm_layer = {'layer': nn.BatchNorm3d, 'params': kwargs}
 
-        super(BottleNeckKAGNFocalModulation3D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv3DLayer,
             focal_norm_layer=focal_norm_layer,
             num_channels=num_channels,
@@ -1070,7 +1070,7 @@ class BottleNeckKAGNFocalModulation2D(KANFocalModulationND):
     ):
         focal_norm_layer = {'layer': nn.BatchNorm2d, 'params': kwargs}
 
-        super(BottleNeckKAGNFocalModulation2D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv2DLayer,
             focal_norm_layer=focal_norm_layer,
             num_channels=num_channels,
@@ -1102,7 +1102,7 @@ class BottleNeckKAGNFocalModulation1D(KANFocalModulationND):
     ):
         focal_norm_layer = {'layer': nn.BatchNorm1d, 'params': kwargs}
 
-        super(BottleNeckKAGNFocalModulation1D, self).__init__(
+        super().__init__(
             conv_kan_layer=BottleNeckKAGNConv1DLayer,
             focal_norm_layer=focal_norm_layer,
             num_channels=num_channels,
@@ -1134,7 +1134,7 @@ class KAGNFocalModulation3D(KANFocalModulationND):
     ):
         focal_norm_layer = {'layer': nn.BatchNorm3d, 'params': kwargs}
 
-        super(KAGNFocalModulation3D, self).__init__(
+        super().__init__(
             conv_kan_layer=KAGNConv3DLayer,
             focal_norm_layer=focal_norm_layer,
             num_channels=num_channels,
@@ -1166,7 +1166,7 @@ class KAGNFocalModulation2D(KANFocalModulationND):
     ):
         focal_norm_layer = {'layer': nn.BatchNorm2d, 'params': kwargs}
 
-        super(KAGNFocalModulation2D, self).__init__(
+        super().__init__(
             conv_kan_layer=KAGNConv2DLayer,
             focal_norm_layer=focal_norm_layer,
             num_channels=num_channels,
@@ -1198,7 +1198,7 @@ class KAGNFocalModulation1D(KANFocalModulationND):
     ):
         focal_norm_layer = {'layer': nn.BatchNorm1d, 'params': kwargs}
 
-        super(KAGNFocalModulation1D, self).__init__(
+        super().__init__(
             conv_kan_layer=KAGNConv1DLayer,
             focal_norm_layer=focal_norm_layer,
             num_channels=num_channels,

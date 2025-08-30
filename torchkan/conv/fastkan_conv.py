@@ -35,7 +35,7 @@ class FastKANConvNDLayer(nn.Module):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(FastKANConvNDLayer, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
@@ -143,7 +143,7 @@ class FastKANConv3DLayer(FastKANConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(FastKANConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             norm_class=nn.InstanceNorm3d,
             ndim=3,
@@ -178,7 +178,7 @@ class FastKANConv2DLayer(FastKANConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(FastKANConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             norm_class=nn.InstanceNorm2d,
             ndim=2,
@@ -213,7 +213,7 @@ class FastKANConv1DLayer(FastKANConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(FastKANConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             norm_class=nn.InstanceNorm1d,
             ndim=1,

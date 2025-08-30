@@ -178,7 +178,7 @@ class KABNConv3DLayer(KABNConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KABNConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             norm_class=nn.InstanceNorm3d,
             conv_w_fun=conv3d,
@@ -210,7 +210,7 @@ class KABNConv2DLayer(KABNConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KABNConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             norm_class=nn.InstanceNorm2d,
             conv_w_fun=conv2d,
@@ -242,7 +242,7 @@ class KABNConv1DLayer(KABNConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KABNConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             norm_class=nn.InstanceNorm1d,
             conv_w_fun=conv1d,

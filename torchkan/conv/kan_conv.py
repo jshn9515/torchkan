@@ -34,7 +34,7 @@ class KANConvNDLayer(nn.Module):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KANConvNDLayer, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.spline_order = spline_order
@@ -178,7 +178,7 @@ class KANConv3DLayer(KANConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KANConv3DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv3d,
             norm_class=nn.InstanceNorm3d,
             ndim=3,
@@ -215,7 +215,7 @@ class KANConv2DLayer(KANConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KANConv2DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv2d,
             norm_class=nn.InstanceNorm2d,
             ndim=2,
@@ -252,7 +252,7 @@ class KANConv1DLayer(KANConvNDLayer):
         dropout: float = 0.0,
         **norm_kwargs,
     ):
-        super(KANConv1DLayer, self).__init__(
+        super().__init__(
             conv_class=nn.Conv1d,
             norm_class=nn.InstanceNorm1d,
             ndim=1,
