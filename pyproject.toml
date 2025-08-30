@@ -30,10 +30,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=2.2.0",
-    "matplotlib>=3.10.0",
     "torch>=2.7.0",
-    "torchvision>=0.20.0",
-    "timm>=1.0.10",
 ]
 
 [tool.setuptools.packages.find]
