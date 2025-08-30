@@ -170,16 +170,16 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         ) * self.beta_weights[n]
 
     @lru_cache(maxsize=128)  # Cache to avoid recomputation of Gram polynomials
-    def gram_poly(self, x: Tensor) -> Tensor:
+    def gram_poly(self, x: Tensor, order: int) -> Tensor:
         P0 = x.new_ones(x.size())
 
-        if self.spline_order == 0:
+        if order == 0:
             return torch.unsqueeze(P0, dim=-1)
 
         P1 = x
         grams_basis = [P0, P1]
 
-        for i in range(2, self.spline_order + 1):
+        for i in range(2, order + 1):
             p2 = x * P1 - self.beta(i - 1, i) * P0
             grams_basis.append(p2)
             P0, P1 = P1, p2
@@ -197,7 +197,7 @@ class BottleNeckKAGNConvNDLayer(nn.Module):
         x = self.inner_proj[group_index](x)
         x = torch.tanh(x).contiguous()
 
-        grams_basis = self.base_activation(self.gram_poly(x))
+        grams_basis = self.base_activation(self.gram_poly(x, self.spline_order))
 
         y = self.conv_w_fun(
             grams_basis,
@@ -398,16 +398,16 @@ class KAGNExpert(nn.Module):
         ) * self.beta_weights[n]
 
     @lru_cache(maxsize=128)  # Cache to avoid recomputation of Gram polynomials
-    def gram_poly(self, x: Tensor) -> Tensor:
+    def gram_poly(self, x: Tensor, order: int) -> Tensor:
         P0 = x.new_ones(x.shape)
 
-        if self.spline_order == 0:
+        if order == 0:
             return torch.unsqueeze(P0, dim=-1)
 
         P1 = x
         grams_basis = [P0, P1]
 
-        for i in range(2, self.spline_order + 1):
+        for i in range(2, order + 1):
             P2 = x * P1 - self.beta(i - 1, i) * P0
             grams_basis.append(P2)
             P0, P1 = P1, P2
@@ -417,7 +417,7 @@ class KAGNExpert(nn.Module):
     def forward_kag(self, x: Tensor, group_index: int) -> Tensor:
         x = torch.tanh(x).contiguous()
 
-        grams_basis = self.base_activation(self.gram_poly(x))
+        grams_basis = self.base_activation(self.gram_poly(x, self.spline_order))
 
         if self.dropout:
             grams_basis = self.dropout(grams_basis)
