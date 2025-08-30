@@ -347,7 +347,7 @@ class WavKANConvNDLayer(nn.Module):
     def __init__(
         self,
         conv_class: type[nn.Module],
-        conv_class_plus1: type[nn.Module],
+        conv_class_plus_one: type[nn.Module],
         norm_class: type[nn.Module],
         ndim: int,
         in_channels: int,
@@ -435,7 +435,7 @@ class WavKANConvNDLayer(nn.Module):
                     )
                 wavelet_conv = WaveletConvNDFastPlusOne(
                     conv_class=conv_class,
-                    conv_class_d_plus_one=conv_class_plus1,
+                    conv_class_d_plus_one=conv_class_plus_one,
                     ndim=ndim,
                     in_channels=in_channels // groups,
                     out_channels=out_channels // groups,
@@ -493,7 +493,7 @@ class WavKANConv3DLayer(WavKANConvNDLayer):
     ):
         super().__init__(
             conv_class=nn.Conv3d,
-            conv_class_plus1=nn.Identity,
+            conv_class_plus_one=nn.Identity,
             norm_class=nn.BatchNorm3d,
             ndim=3,
             in_channels=in_channels,
@@ -527,7 +527,7 @@ class WavKANConv2DLayer(WavKANConvNDLayer):
     ):
         super().__init__(
             conv_class=nn.Conv2d,
-            conv_class_plus1=nn.Conv3d,
+            conv_class_plus_one=nn.Conv3d,
             norm_class=nn.BatchNorm2d,
             ndim=2,
             in_channels=in_channels,
@@ -561,7 +561,7 @@ class WavKANConv1DLayer(WavKANConvNDLayer):
     ):
         super().__init__(
             conv_class=nn.Conv1d,
-            conv_class_plus1=nn.Conv2d,
+            conv_class_plus_one=nn.Conv2d,
             norm_class=nn.BatchNorm1d,
             ndim=1,
             in_channels=in_channels,
