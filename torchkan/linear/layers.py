@@ -285,7 +285,7 @@ class GRAMLayer(nn.Module):
 
         self.in_features = in_features
         self.out_features = out_features
-        self.spline_orders = spline_order
+        self.spline_order = spline_order
         self.base_activation = base_activation
         self.norm = nn.LayerNorm(out_features, dtype=torch.float32)
         self.beta_weights = nn.Parameter(
@@ -306,7 +306,7 @@ class GRAMLayer(nn.Module):
         nn.init.normal_(
             self.beta_weights,
             mean=0.0,
-            std=1.0 / (self.in_features * (self.spline_orders + 1.0)),
+            std=1.0 / (self.in_features * (self.spline_order + 1.0)),
         )
         nn.init.xavier_uniform_(self.grams_basis_weights)
         nn.init.xavier_uniform_(self.base_weights)
@@ -317,15 +317,15 @@ class GRAMLayer(nn.Module):
         ) * self.beta_weights[n]
 
     @lru_cache(maxsize=128)
-    def gram_poly(self, x: Tensor, spline_order: int) -> Tensor:
+    def gram_poly(self, x: Tensor) -> Tensor:
         P0 = x.new_ones(x.size())
-        if spline_order == 0:
+        if self.spline_order == 0:
             return torch.unsqueeze(P0, dim=-1)
 
         P1 = x
         grams_basis = [P0, P1]
 
-        for i in range(2, spline_order + 1):
+        for i in range(2, self.spline_order + 1):
             P2 = x * P1 - self.beta(i - 1, i) * P0
             grams_basis.append(P2)
             P0, P1 = P1, P2
@@ -335,7 +335,7 @@ class GRAMLayer(nn.Module):
     def forward(self, x: Tensor) -> Tensor:
         basis = F.linear(self.base_activation(x), self.base_weights)
         x = torch.tanh(x).contiguous()
-        grams_basis = self.base_activation(self.gram_poly(x, self.spline_orders))
+        grams_basis = self.base_activation(self.gram_poly(x))
 
         y = torch.einsum('bid,iod->bo', grams_basis, self.grams_basis_weights)
 
@@ -719,7 +719,7 @@ class BottleNeckGRAMLayer(nn.Module):
         basis = F.linear(self.base_activation(x), self.base_weights)
         x = self.inner_proj(x)
         x = torch.tanh(x).contiguous()
-        grams_basis = self.base_activation(self.gram_poly(x, self.spline_orders))
+        grams_basis = self.base_activation(self.gram_poly(x))
 
         y = torch.einsum('bid,iod->bo', grams_basis, self.grams_basis_weights)
 
