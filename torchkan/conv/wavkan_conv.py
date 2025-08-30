@@ -172,7 +172,7 @@ class WaveletConvNDFastPlusOne(WaveletConvND):
     def __init__(
         self,
         conv_class: type[nn.Module],
-        conv_class_d_plus_one: type[nn.Module] | None,
+        conv_class_d_plus_one: type[nn.Module],
         ndim: int,
         in_channels: int,
         out_channels: int,
@@ -183,7 +183,7 @@ class WaveletConvNDFastPlusOne(WaveletConvND):
         wavelet_type: WaveletType = 'mexican_hat',
     ):
         super(WaveletConvND, self).__init__()
-        assert ndim < 3, 'fast_plus_one version supports only 1D and 2D convs'
+        assert ndim < 3, 'fast_plus_one version supports only 1D and 2D convs.'
 
         shapes = (1, out_channels, in_channels) + (1,) * ndim
 
@@ -213,7 +213,6 @@ class WaveletConvNDFastPlusOne(WaveletConvND):
             else (1,) + (dilation,) * ndim
         )
 
-        assert conv_class_d_plus_one
         self.wavelet_weights = conv_class_d_plus_one(
             out_channels,
             out_channels,
@@ -348,7 +347,7 @@ class WavKANConvNDLayer(nn.Module):
     def __init__(
         self,
         conv_class: type[nn.Module],
-        conv_class_plus1: type[nn.Module] | None,
+        conv_class_plus1: type[nn.Module],
         norm_class: type[nn.Module],
         ndim: int,
         in_channels: int,
@@ -498,7 +497,7 @@ class WavKANConv3DLayer(WavKANConvNDLayer):
     ):
         super().__init__(
             conv_class=nn.Conv3d,
-            conv_class_plus1=None,
+            conv_class_plus1=nn.Identity,
             norm_class=nn.BatchNorm3d,
             ndim=3,
             in_channels=in_channels,
