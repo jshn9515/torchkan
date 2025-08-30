@@ -893,7 +893,9 @@ class KANFocalModulationND(nn.Module):
                     kernel_size=1,
                 )
                 self.h = nn.Conv1d(
-                    in_channels=num_channels, out_channels=num_channels, kernel_size=1
+                    in_channels=num_channels,
+                    out_channels=num_channels,
+                    kernel_size=1,
                 )
             elif self.ndim == 2:
                 self.f = nn.Conv2d(
@@ -902,7 +904,9 @@ class KANFocalModulationND(nn.Module):
                     kernel_size=1,
                 )
                 self.h = nn.Conv2d(
-                    in_channels=num_channels, out_channels=num_channels, kernel_size=1
+                    in_channels=num_channels,
+                    out_channels=num_channels,
+                    kernel_size=1,
                 )
             else:
                 self.f = nn.Conv3d(
