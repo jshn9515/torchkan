@@ -7,29 +7,19 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 
-from .fastkan_conv import FastKANConv1DLayer, FastKANConv2DLayer, FastKANConv3DLayer
-from .kabn_conv import KABNConv1DLayer, KABNConv2DLayer, KABNConv3DLayer
-from .kacn_conv import KACNConv1DLayer, KACNConv2DLayer, KACNConv3DLayer
 from .kagn_bottleneck_conv import (
     BottleNeckKAGNConv1DLayer,
     BottleNeckKAGNConv2DLayer,
     BottleNeckKAGNConv3DLayer,
-    MoEBottleNeckKAGNConv1DLayer,
-    MoEBottleNeckKAGNConv2DLayer,
-    MoEBottleNeckKAGNConv3DLayer,
 )
 from .kagn_conv import KAGNConv1DLayer, KAGNConv2DLayer, KAGNConv3DLayer
 from .kagn_conv_v2 import KAGNConv1DLayerV2, KAGNConv2DLayerV2, KAGNConv3DLayerV2
-from .kajn_conv import KAJNConv1DLayer, KAJNConv2DLayer, KAJNConv3DLayer
-from .kaln_conv import KALNConv1DLayer, KALNConv2DLayer, KALNConv3DLayer
-from .kan_conv import KANConv1DLayer, KANConv2DLayer, KANConv3DLayer
 from .relukan_bottleneck_conv import (
     BottleNeckReLUKANConv1DLayer,
     BottleNeckReLUKANConv2DLayer,
     BottleNeckReLUKANConv3DLayer,
 )
 from .relukan_conv import ReLUKANConv1DLayer, ReLUKANConv2DLayer, ReLUKANConv3DLayer
-from .wavkan_conv import WavKANConv1DLayer, WavKANConv2DLayer, WavKANConv3DLayer
 
 from torchkan.utils.typing import (
     Padding1D,
@@ -815,58 +805,20 @@ class KANFocalModulationND(nn.Module):
         self.normalize_modulator = normalize_modulator
 
         conv_class_focal = conv_class
-        if conv_class in [
-            FastKANConv1DLayer,
-            KANConv1DLayer,
-            KALNConv1DLayer,
-            KACNConv1DLayer,
-            KAGNConv1DLayer,
-            WavKANConv1DLayer,
-            KAJNConv1DLayer,
-            KABNConv1DLayer,
-            BottleNeckKAGNConv1DLayer,
-            MoEBottleNeckKAGNConv1DLayer,
-            ReLUKANConv1DLayer,
-            BottleNeckReLUKANConv1DLayer,
-        ]:
-            self.global_pool = nn.AdaptiveAvgPool1d(1)
+        name = conv_class.__name__
+        if name.endswith('1DLayer'):
             self.ndim = 1
+            self.global_pool = nn.AdaptiveAvgPool1d(1)
             if conv_class in [BottleNeckKAGNConv1DLayer, KAGNConv1DLayer]:
                 conv_class_focal = KAGNConv1DLayerV2
-        elif conv_class in [
-            FastKANConv2DLayer,
-            KANConv2DLayer,
-            KALNConv2DLayer,
-            KACNConv2DLayer,
-            KAGNConv2DLayer,
-            WavKANConv2DLayer,
-            KAJNConv2DLayer,
-            KABNConv2DLayer,
-            BottleNeckKAGNConv2DLayer,
-            MoEBottleNeckKAGNConv2DLayer,
-            ReLUKANConv2DLayer,
-            BottleNeckReLUKANConv2DLayer,
-        ]:
+        elif name.endswith('2DLayer'):
             self.ndim = 2
             self.global_pool = nn.AdaptiveAvgPool2d(1)
             if conv_class in [BottleNeckKAGNConv2DLayer, KAGNConv2DLayer]:
                 conv_class_focal = KAGNConv2DLayerV2
-        elif conv_class in [
-            FastKANConv3DLayer,
-            KANConv3DLayer,
-            KALNConv3DLayer,
-            KACNConv3DLayer,
-            KAGNConv3DLayer,
-            WavKANConv3DLayer,
-            KAJNConv3DLayer,
-            KABNConv3DLayer,
-            BottleNeckKAGNConv3DLayer,
-            MoEBottleNeckKAGNConv3DLayer,
-            ReLUKANConv3DLayer,
-            BottleNeckReLUKANConv3DLayer,
-        ]:
-            self.global_pool = nn.AdaptiveAvgPool3d(1)
+        elif name.endswith('3DLayer'):
             self.ndim = 3
+            self.global_pool = nn.AdaptiveAvgPool3d(1)
             if conv_class in [BottleNeckKAGNConv3DLayer, KAGNConv3DLayer]:
                 conv_class_focal = KAGNConv3DLayerV2
 
@@ -915,11 +867,16 @@ class KANFocalModulationND(nn.Module):
                     kernel_size=1,
                 )
                 self.h = nn.Conv3d(
-                    in_channels=num_channels, out_channels=num_channels, kernel_size=1
+                    in_channels=num_channels,
+                    out_channels=num_channels,
+                    kernel_size=1,
                 )
 
         self.proj = conv_class(
-            in_channels=num_channels, out_channels=num_channels, kernel_size=1, **kwargs
+            in_channels=num_channels,
+            out_channels=num_channels,
+            kernel_size=1,
+            **kwargs,
         )
 
         self.focal_layers = nn.ModuleList([])
