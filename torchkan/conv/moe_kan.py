@@ -73,37 +73,14 @@ class MoEKANConvBase(nn.Module):
         self.register_buffer('mean', torch.tensor(0.0))
         self.register_buffer('std', torch.tensor(1.0))
 
-        if conv_class in [
-            KANConv1DLayer,
-            FastKANConv1DLayer,
-            KALNConv1DLayer,
-            KACNConv1DLayer,
-            KAGNConv1DLayer,
-            WavKANConv1DLayer,
-            BottleNeckKAGNConv1DLayer,
-        ]:
+        name = conv_class.__name__
+        if name.endswith('1DLayer'):
             self.avgpool = nn.AdaptiveAvgPool1d(1)
             self.conv_dims = 1
-        elif conv_class in [
-            KANConv2DLayer,
-            FastKANConv2DLayer,
-            KALNConv2DLayer,
-            KACNConv2DLayer,
-            KAGNConv2DLayer,
-            WavKANConv2DLayer,
-            BottleNeckKAGNConv2DLayer,
-        ]:
+        elif name.endswith('2DLayer'):
             self.avgpool = nn.AdaptiveAvgPool2d(1)
             self.conv_dims = 2
-        elif conv_class in [
-            KANConv3DLayer,
-            FastKANConv3DLayer,
-            KALNConv3DLayer,
-            KACNConv3DLayer,
-            KAGNConv3DLayer,
-            WavKANConv3DLayer,
-            BottleNeckKAGNConv3DLayer,
-        ]:
+        elif name.endswith('3DLayer'):
             self.avgpool = nn.AdaptiveAvgPool3d(1)
             self.conv_dims = 3
 

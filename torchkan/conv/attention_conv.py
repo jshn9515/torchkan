@@ -150,66 +150,27 @@ class SelfKANtentionND(nn.Module):
 
         kernel_size = kwargs.pop('kernel_size')
 
-        if conv_kan_layer in [
-            FastKANConv1DLayer,
-            KANConv1DLayer,
-            KALNConv1DLayer,
-            KACNConv1DLayer,
-            KAGNConv1DLayer,
-            WavKANConv1DLayer,
-            KAJNConv1DLayer,
-            KABNConv1DLayer,
-            BottleNeckKAGNConv1DLayer,
-            MoEBottleNeckKAGNConv1DLayer,
-            ReLUKANConv1DLayer,
-            BottleNeckReLUKANConv1DLayer,
-        ]:
+        name = conv_kan_layer.__name__
+        if name.endswith('1DLayer'):
             self.ndim = 1
             if self.norm_layer is None:
                 self.norm_layer = nn.BatchNorm1d(input_dim)
             else:
                 self.norm_layer = self.norm_layer(input_dim, affine=affine)
-        elif conv_kan_layer in [
-            FastKANConv2DLayer,
-            KANConv2DLayer,
-            KALNConv2DLayer,
-            KACNConv2DLayer,
-            KAGNConv2DLayer,
-            WavKANConv2DLayer,
-            KAJNConv2DLayer,
-            KABNConv2DLayer,
-            BottleNeckKAGNConv2DLayer,
-            MoEBottleNeckKAGNConv2DLayer,
-            ReLUKANConv2DLayer,
-            BottleNeckReLUKANConv2DLayer,
-        ]:
+        elif name.endswith('2DLayer'):
             self.ndim = 2
             if self.norm_layer is None:
                 self.norm_layer = nn.BatchNorm2d(input_dim)
             else:
                 self.norm_layer = self.norm_layer(input_dim, affine=affine)
-        elif conv_kan_layer in [
-            FastKANConv3DLayer,
-            KANConv3DLayer,
-            KALNConv3DLayer,
-            KACNConv3DLayer,
-            KAGNConv3DLayer,
-            WavKANConv3DLayer,
-            KAJNConv3DLayer,
-            KABNConv3DLayer,
-            BottleNeckKAGNConv3DLayer,
-            MoEBottleNeckKAGNConv3DLayer,
-            ReLUKANConv3DLayer,
-            BottleNeckReLUKANConv3DLayer,
-        ]:
+        elif name.endswith('3DLayer'):
             self.ndim = 3
             if self.norm_layer is None:
                 self.norm_layer = nn.BatchNorm3d(input_dim)
             else:
                 self.norm_layer = self.norm_layer(input_dim, affine=affine)
-
-        assert self.norm_layer is not None
-        assert self.ndim is not None, 'Unsupported conv_kan layer!'
+        else:
+            raise ValueError('Unsupported dimention of conv_kan_layer.')
 
         self.inner_proj = None
         self.outer_proj = None
