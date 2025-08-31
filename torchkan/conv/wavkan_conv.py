@@ -359,7 +359,7 @@ class WavKANConvNDLayer(nn.Module):
         groups: int = 1,
         base_activation: Activation = nn.SiLU(),
         dropout: float = 0.0,
-        wavlet_version: WaveletVersion = 'base',
+        wavelet_version: WaveletVersion = 'base',
         wavelet_type: WaveletType = 'mexican_hat',
         **norm_kwargs,
     ):
@@ -403,7 +403,7 @@ class WavKANConvNDLayer(nn.Module):
         )
         self.base_conv = nn.ModuleList([base_conv] * groups)
 
-        match wavlet_version:
+        match wavelet_version:
             case 'base':
                 wavelet_conv = WaveletConvND(
                     conv_class=conv_class,
@@ -488,7 +488,7 @@ class WavKANConv3DLayer(WavKANConvNDLayer):
         groups: int = 1,
         dropout: float = 0.0,
         wavelet_type: WaveletType = 'mexican_hat',
-        wavlet_version: WaveletVersion = 'fast',
+        wavelet_version: WaveletVersion = 'fast',
         **norm_kwargs,
     ):
         super().__init__(
@@ -505,7 +505,7 @@ class WavKANConv3DLayer(WavKANConvNDLayer):
             dilation=dilation,
             dropout=dropout,
             wavelet_type=wavelet_type,
-            wavlet_version=wavlet_version,
+            wavelet_version=wavelet_version,
             **norm_kwargs,
         )
 
@@ -522,7 +522,7 @@ class WavKANConv2DLayer(WavKANConvNDLayer):
         groups: int = 1,
         dropout: float = 0.0,
         wavelet_type: WaveletType = 'mexican_hat',
-        wavlet_version: WaveletVersion = 'fast',
+        wavelet_version: WaveletVersion = 'fast',
         **norm_kwargs,
     ):
         super().__init__(
@@ -539,7 +539,7 @@ class WavKANConv2DLayer(WavKANConvNDLayer):
             dilation=dilation,
             dropout=dropout,
             wavelet_type=wavelet_type,
-            wavlet_version=wavlet_version,
+            wavelet_version=wavelet_version,
             **norm_kwargs,
         )
 
@@ -556,7 +556,7 @@ class WavKANConv1DLayer(WavKANConvNDLayer):
         groups: int = 1,
         dropout: float = 0.0,
         wavelet_type: WaveletType = 'mexican_hat',
-        wavlet_version: WaveletVersion = 'fast',
+        wavelet_version: WaveletVersion = 'fast',
         **norm_kwargs,
     ):
         super().__init__(
@@ -573,6 +573,6 @@ class WavKANConv1DLayer(WavKANConvNDLayer):
             dilation=dilation,
             dropout=dropout,
             wavelet_type=wavelet_type,
-            wavlet_version=wavlet_version,
+            wavelet_version=wavelet_version,
             **norm_kwargs,
         )
