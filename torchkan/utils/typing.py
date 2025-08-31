@@ -1,5 +1,6 @@
 from typing import Callable, Literal, TypeAlias
 
+import torch.nn as nn
 from torch import Tensor
 
 Size1D: TypeAlias = int
@@ -14,6 +15,7 @@ Padding3D: TypeAlias = PaddingType | Size3D
 PaddingND: TypeAlias = PaddingType | SizeND
 
 NDim: TypeAlias = Literal[1, 2, 3]
+ConvFunc: TypeAlias = Callable[..., nn.Module]
 Activation: TypeAlias = Callable[[Tensor], Tensor]
 
 WaveletType: TypeAlias = Literal['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon']
