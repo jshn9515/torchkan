@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from ...conv import (
+from torchkan.conv import (
     BottleNeckKAGNConv2DLayer,
     BottleNeckSelfKAGNtention2D,
     FastKANConv2DLayer,
@@ -14,7 +14,7 @@ from ...conv import (
     SelfKAGNtention2D,
     WavKANConv2DLayer,
 )
-from ...utils import L1
+from torchkan.utils import L1
 
 from torchkan.utils.typing import Padding2D, Size2D, WaveletType, WaveletVersion
 
