@@ -17,9 +17,9 @@ class ResidualUNetBase(nn.Module):
         conv_func: ConvFunc,
         conf_fun_first: ConvFunc | None = None,
         depth: int = 7,
-        in_ch: int = 3,
-        mid_ch: int = 12,
-        out_ch: int = 3,
+        in_channels: int = 3,
+        mid_channels: int = 12,
+        out_channels: int = 3,
     ):
         super().__init__()
 
@@ -27,15 +27,15 @@ class ResidualUNetBase(nn.Module):
         self.depth = depth
 
         if conf_fun_first is not None:
-            self.input_conv = conf_fun_first(in_ch, out_ch, dilation=1)
+            self.input_conv = conf_fun_first(in_channels, out_channels, dilation=1)
         else:
-            self.input_conv = conv_func(in_ch, out_ch, dilation=1)
+            self.input_conv = conv_func(in_channels, out_channels, dilation=1)
 
         self.encoder_list = nn.ModuleList(
             [
                 conv_func(
-                    mid_ch if i > 0 else out_ch,
-                    mid_ch,
+                    mid_channels if i > 0 else out_channels,
+                    mid_channels,
                     dilation=1 if i < depth - 1 else 2,
                 )
                 for i in range(depth)
@@ -43,7 +43,11 @@ class ResidualUNetBase(nn.Module):
         )
         self.decoder_list = nn.ModuleList(
             [
-                conv_func(mid_ch * 2, mid_ch if i < depth - 2 else out_ch, dilation=1)
+                conv_func(
+                    mid_channels * 2,
+                    mid_channels if i < depth - 2 else out_channels,
+                    dilation=1,
+                )
                 for i in range(depth - 1)
             ]
         )
@@ -79,27 +83,29 @@ class ResidualUNetBaseF(nn.Module):
         self,
         conv_func: ConvFunc,
         depth: int = 4,
-        in_ch: int = 3,
-        mid_ch: int = 12,
-        out_ch: int = 3,
+        in_channels: int = 3,
+        mid_channels: int = 12,
+        out_channels: int = 3,
     ):
         super().__init__()
 
         assert depth >= 4, f'Minimum supported depth = 4, but provided {depth}.'
         self.depth = depth
 
-        self.input_conv = conv_func(in_ch, out_ch, dilation=1)
+        self.input_conv = conv_func(in_channels, out_channels, dilation=1)
         self.encoder_list = nn.ModuleList(
             [
-                conv_func(mid_ch if i > 0 else out_ch, mid_ch, dilation=2**i)
+                conv_func(
+                    mid_channels if i > 0 else out_channels, mid_channels, dilation=2**i
+                )
                 for i in range(depth)
             ]
         )
         self.decoder_list = nn.ModuleList(
             [
                 conv_func(
-                    mid_ch * 2,
-                    mid_ch if i < depth - 2 else out_ch,
+                    mid_channels * 2,
+                    mid_channels if i < depth - 2 else out_channels,
                     dilation=2 ** (depth - 2 - i),
                 )
                 for i in range(depth - 1)
@@ -130,8 +136,8 @@ class U2KANet(nn.Module):
         self,
         conv_func: ConvFunc,
         conf_fun_first: ConvFunc | None = None,
-        in_ch: int = 3,
-        out_ch: int = 1,
+        in_channels: int = 3,
+        out_channels: int = 1,
         width_factor: int = 1,
     ):
         super().__init__()
@@ -139,95 +145,129 @@ class U2KANet(nn.Module):
             conv_func=conv_func,
             conf_fun_first=conf_fun_first,
             depth=7,
-            in_ch=in_ch,
-            mid_ch=8 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=in_channels,
+            mid_channels=8 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.pool12 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage2 = ResidualUNetBase(
             conv_func=conv_func,
             depth=6,
-            in_ch=16 * width_factor,
-            mid_ch=8 * width_factor,
-            out_ch=32 * width_factor,
+            in_channels=16 * width_factor,
+            mid_channels=8 * width_factor,
+            out_channels=32 * width_factor,
         )
         self.pool23 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage3 = ResidualUNetBase(
             conv_func=conv_func,
             depth=5,
-            in_ch=32 * width_factor,
-            mid_ch=16 * width_factor,
-            out_ch=64 * width_factor,
+            in_channels=32 * width_factor,
+            mid_channels=16 * width_factor,
+            out_channels=64 * width_factor,
         )
         self.pool34 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage4 = ResidualUNetBase(
             conv_func=conv_func,
             depth=4,
-            in_ch=64 * width_factor,
-            mid_ch=32 * width_factor,
-            out_ch=128 * width_factor,
+            in_channels=64 * width_factor,
+            mid_channels=32 * width_factor,
+            out_channels=128 * width_factor,
         )
         self.pool45 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage5 = ResidualUNetBaseF(
             conv_func=conv_func,
             depth=4,
-            in_ch=128 * width_factor,
-            mid_ch=64 * width_factor,
-            out_ch=128 * width_factor,
+            in_channels=128 * width_factor,
+            mid_channels=64 * width_factor,
+            out_channels=128 * width_factor,
         )
         self.pool56 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage6 = ResidualUNetBaseF(
             conv_func=conv_func,
             depth=4,
-            in_ch=128 * width_factor,
-            mid_ch=64 * width_factor,
-            out_ch=128 * width_factor,
+            in_channels=128 * width_factor,
+            mid_channels=64 * width_factor,
+            out_channels=128 * width_factor,
         )
 
         # decoder
         self.stage5d = ResidualUNetBaseF(
             conv_func=conv_func,
             depth=4,
-            in_ch=256 * width_factor,
-            mid_ch=64 * width_factor,
-            out_ch=128 * width_factor,
+            in_channels=256 * width_factor,
+            mid_channels=64 * width_factor,
+            out_channels=128 * width_factor,
         )
         self.stage4d = ResidualUNetBase(
             conv_func=conv_func,
             depth=4,
-            in_ch=256 * width_factor,
-            mid_ch=32 * width_factor,
-            out_ch=64 * width_factor,
+            in_channels=256 * width_factor,
+            mid_channels=32 * width_factor,
+            out_channels=64 * width_factor,
         )
         self.stage3d = ResidualUNetBase(
             conv_func=conv_func,
             depth=5,
-            in_ch=128 * width_factor,
-            mid_ch=16 * width_factor,
-            out_ch=32 * width_factor,
+            in_channels=128 * width_factor,
+            mid_channels=16 * width_factor,
+            out_channels=32 * width_factor,
         )
         self.stage2d = ResidualUNetBase(
             conv_func=conv_func,
             depth=6,
-            in_ch=64 * width_factor,
-            mid_ch=8 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=64 * width_factor,
+            mid_channels=8 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.stage1d = ResidualUNetBase(
             conv_func=conv_func,
             depth=7,
-            in_ch=32 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=32 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
 
-        self.side1 = nn.Conv2d(16 * width_factor, out_ch, 3, padding=1)
-        self.side2 = nn.Conv2d(16 * width_factor, out_ch, 3, padding=1)
-        self.side3 = nn.Conv2d(32 * width_factor, out_ch, 3, padding=1)
-        self.side4 = nn.Conv2d(64 * width_factor, out_ch, 3, padding=1)
-        self.side5 = nn.Conv2d(128 * width_factor, out_ch, 3, padding=1)
-        self.side6 = nn.Conv2d(128 * width_factor, out_ch, 3, padding=1)
-        self.outconv = nn.Conv2d(6 * out_ch, out_ch, 1)
+        self.side1 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side2 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side3 = nn.Conv2d(
+            32 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side4 = nn.Conv2d(
+            64 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side5 = nn.Conv2d(
+            128 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side6 = nn.Conv2d(
+            128 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.outconv = nn.Conv2d(
+            6 * out_channels,
+            out_channels,
+            kernel_size=1,
+        )
 
     def forward(self, x: Tensor) -> tuple[Tensor, ...]:
         hx = x
@@ -282,8 +322,8 @@ class TinyU2KANet(nn.Module):
         self,
         conv_func: ConvFunc,
         conf_fun_first: ConvFunc | None = None,
-        in_ch: int = 3,
-        out_ch: int = 1,
+        in_channels: int = 3,
+        out_channels: int = 1,
         width_factor: int = 1,
     ):
         super().__init__()
@@ -291,95 +331,129 @@ class TinyU2KANet(nn.Module):
             conv_func=conv_func,
             conf_fun_first=conf_fun_first,
             depth=7,
-            in_ch=in_ch,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=in_channels,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.pool12 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage2 = ResidualUNetBase(
             conv_func=conv_func,
             depth=6,
-            in_ch=16 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=16 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.pool23 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage3 = ResidualUNetBase(
             conv_func=conv_func,
             depth=5,
-            in_ch=16 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=16 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.pool34 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage4 = ResidualUNetBase(
             conv_func=conv_func,
             depth=4,
-            in_ch=16 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=16 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.pool45 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage5 = ResidualUNetBaseF(
             conv_func=conv_func,
             depth=4,
-            in_ch=16 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=16 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.pool56 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.stage6 = ResidualUNetBaseF(
             conv_func=conv_func,
             depth=4,
-            in_ch=16 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=16 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
 
         # decoder
         self.stage5d = ResidualUNetBaseF(
             conv_func=conv_func,
             depth=4,
-            in_ch=32 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=32 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.stage4d = ResidualUNetBase(
             conv_func=conv_func,
             depth=4,
-            in_ch=32 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=32 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.stage3d = ResidualUNetBase(
             conv_func=conv_func,
             depth=5,
-            in_ch=32 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=32 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.stage2d = ResidualUNetBase(
             conv_func=conv_func,
             depth=6,
-            in_ch=32 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=32 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
         self.stage1d = ResidualUNetBase(
             conv_func=conv_func,
             depth=7,
-            in_ch=32 * width_factor,
-            mid_ch=4 * width_factor,
-            out_ch=16 * width_factor,
+            in_channels=32 * width_factor,
+            mid_channels=4 * width_factor,
+            out_channels=16 * width_factor,
         )
 
-        self.side1 = nn.Conv2d(16 * width_factor, out_ch, kernel_size=3, padding=1)
-        self.side2 = nn.Conv2d(16 * width_factor, out_ch, kernel_size=3, padding=1)
-        self.side3 = nn.Conv2d(16 * width_factor, out_ch, kernel_size=3, padding=1)
-        self.side4 = nn.Conv2d(16 * width_factor, out_ch, kernel_size=3, padding=1)
-        self.side5 = nn.Conv2d(16 * width_factor, out_ch, kernel_size=3, padding=1)
-        self.side6 = nn.Conv2d(16 * width_factor, out_ch, kernel_size=3, padding=1)
-        self.outconv = nn.Conv2d(6 * out_ch, out_ch, kernel_size=1)
+        self.side1 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side2 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side3 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side4 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side5 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.side6 = nn.Conv2d(
+            16 * width_factor,
+            out_channels,
+            kernel_size=3,
+            padding=1,
+        )
+        self.outconv = nn.Conv2d(
+            6 * out_channels,
+            out_channels,
+            kernel_size=1,
+        )
 
     def forward(self, x: Tensor) -> tuple[Tensor, ...]:
         hx = x
