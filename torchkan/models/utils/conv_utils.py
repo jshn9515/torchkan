@@ -158,7 +158,7 @@ def kagn_conv3x3(
     dilation: Size2D = 1,
     groups: int = 1,
     dropout: float = 0.0,
-    norm_layer=nn.InstanceNorm2d,
+    norm_layer: type[nn.Module] = nn.InstanceNorm2d,
     l1_decay: float = 0.0,
     **norm_kwargs,
 ) -> nn.Module:
