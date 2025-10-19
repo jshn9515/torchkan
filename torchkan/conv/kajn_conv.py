@@ -1,7 +1,7 @@
 # based on this implementation: https://github.com/SpaceLearner/JacobiKAN/blob/main/JacobiKANLayer.py
 
 from functools import lru_cache
-from typing import Callable
+from collections.abc import Callable
 
 import torch
 import torch.nn as nn

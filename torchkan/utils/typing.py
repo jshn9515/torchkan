@@ -1,4 +1,5 @@
-from typing import Callable, Literal, TypeAlias
+from collections.abc import Callable
+from typing import Literal, TypeAlias
 
 import torch.nn as nn
 from torch import Tensor

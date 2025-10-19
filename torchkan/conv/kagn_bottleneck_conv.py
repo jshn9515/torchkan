@@ -1,7 +1,7 @@
 # Based on this: https://github.com/Khochawongwat/GRAMKAN/blob/main/model.py
 
 from functools import lru_cache
-from typing import Callable
+from collections.abc import Callable
 
 import torch
 import torch.nn as nn
@@ -780,7 +780,11 @@ class MoEBottleNeckKAGNConvND(nn.Module):
         y, loss = self.experts.forward(torch.concat(output, dim=1), loss_coef=loss_coef)
         output = []
         for group_index, (xb, xe) in enumerate(
-            zip(bases, torch.split(y, self.inner_channels, dim=1), strict=True,)
+            zip(
+                bases,
+                torch.split(y, self.inner_channels, dim=1),
+                strict=True,
+            )
         ):
             y = self.forward_moe_outer(xe, xb, group_index=group_index)
             output.append(y)
