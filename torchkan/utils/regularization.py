@@ -15,7 +15,10 @@ class NoiseInjection(nn.Module):
 
     def get_noise(self, x: Tensor) -> Tensor:
         dims = tuple(i for i in range(len(x.shape)) if i != 1)
-        std = torch.std(x, dim=dims, keepdim=True)
+        if x.numel() > 1:
+            std = torch.std(x, dim=dims, keepdim=True)
+        else:
+            std = torch.tensor(0.0)
         noise = torch.randn(x.shape, device=x.device, dtype=x.dtype) * std
         return noise
 
