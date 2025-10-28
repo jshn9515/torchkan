@@ -250,7 +250,7 @@ def test_wavkan_conv_1d(
         dilation=1,
         wavelet_type=wavelets,
         dropout=dropout,
-        wavlet_version=implementation,
+        wavelet_version=implementation,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim)
@@ -286,7 +286,7 @@ def test_wavkan_conv_2d(
         dilation=1,
         wavelet_type=wavelets,
         dropout=dropout,
-        wavlet_version=implementation,
+        wavelet_version=implementation,
     )
     out = net(input_tensor)
     assert out.shape == (batch_size, out_channels, spatial_dim, spatial_dim)
@@ -324,7 +324,7 @@ def test_wavkan_conv_3d(
         dilation=1,
         wavelet_type=wavelets,
         dropout=dropout,
-        wavlet_version=implementation,
+        wavelet_version=implementation,
     )
     out = net(input_tensor)
     assert out.shape == (
