@@ -1,23 +1,23 @@
 from collections.abc import Callable
-from typing import Literal, TypeAlias
+from typing import Literal
 
 import torch.nn as nn
 from torch import Tensor
 
-Size1D: TypeAlias = int
-Size2D: TypeAlias = int | tuple[int, int]
-Size3D: TypeAlias = int | tuple[int, int, int]
-SizeND: TypeAlias = int | tuple[int, ...]
+type Size1D = int
+type Size2D= int | tuple[int, int]
+type Size3D= int | tuple[int, int, int]
+type SizeND= int | tuple[int, ...]
 
-PaddingType: TypeAlias = Literal['valid', 'same']
-Padding1D: TypeAlias = PaddingType | Size1D
-Padding2D: TypeAlias = PaddingType | Size2D
-Padding3D: TypeAlias = PaddingType | Size3D
-PaddingND: TypeAlias = PaddingType | SizeND
+type PaddingType= Literal['valid', 'same']
+type Padding1D= PaddingType | Size1D
+type Padding2D= PaddingType | Size2D
+type Padding3D= PaddingType | Size3D
+type PaddingND= PaddingType | SizeND
 
-NDim: TypeAlias = Literal[1, 2, 3]
-ConvFunc: TypeAlias = Callable[..., nn.Module]
-Activation: TypeAlias = Callable[[Tensor], Tensor]
+type NDim= Literal[1, 2, 3]
+type ConvFunc= Callable[..., nn.Module]
+type Activation= Callable[[Tensor], Tensor]
 
-WaveletType: TypeAlias = Literal['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon']
-WaveletVersion: TypeAlias = Literal['base', 'fast', 'fast_plus_one']
+type WaveletType= Literal['mexican_hat', 'morlet', 'dog', 'meyer', 'shannon']
+type WaveletVersion= Literal['base', 'fast', 'fast_plus_one']
