@@ -29,6 +29,9 @@ dependencies = [
     "timm>=1.0.15",
 ]
 
+[project.optional-dependencies]
+test = ['pytest>=9.0.0']
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["torchkan*"]
