@@ -61,7 +61,7 @@ jobs:
       - name: Install dependencies
         run: |
           uv venv --python ${{ matrix.python-version }}
-          uv pip install .
+          uv pip install ".[test]"
 
       - name: Test torchkan package on Python ${{ matrix.python-version }}
         run: uv run python -m pytest ./tests
