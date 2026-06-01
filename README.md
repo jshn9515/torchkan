@@ -27,7 +27,7 @@ $S(i,j) = I(i,j)\ast K(i,j) = \sum_m\sum_n w_{m,n}I(i+m,j_n)$
 
 Then, we apply batch norm and non-linearity, for example - ReLU:
 
-$x = \text{ReLU}(\text{BatchNorm}(x))$
+$x = \operatorname{ReLU}(\operatorname{BatchNorm}(x))$
 
 Kolmogorov-Arnold Convolutions work slightly differently: the kernel consists of a set of univariate non-linear functions. This kernel "slides" over the 2D input data, performing element-wise application of the kernel's functions. The results are then summed up into a single output pixel. More formal: suppose we have an input image y (again), with N x N size. We omit the channel axis for simplicity, it adds another summations sign. So, the KAN-based convolutions defined as:
 
@@ -35,11 +35,11 @@ $S(i,j) = I(i,j)\ast K(i,j) = \sum_m\sum_n \phi_{m,n}I(i+m,j_n)$
 
 And each phi is a univariate non-linear learnable function. In the original paper, the authors propose to use this form of the functions:
 
-$b(x)=w_b\cdot b(x) + w_s\cdot \text{spline}(x)$
+$b(x)=w_b\cdot b(x) + w_s\cdot \mathrm{spline}(x)$
 
 And authors propose to choose SiLU as $b(x)$ activation:
 
-$b(x) = \text{SiLU}(x) = \frac{x}{1+e^{-x}}$
+$b(x) = \operatorname{SiLU}(x) = \frac{x}{1+e^{-x}}$
 
 To sum up, the "traditional" convolution is a matrix of weights, while Kolmogorov-Arnold convolutions are a set of functions. That's the primary difference. The key question here is - how should we construct these univariate non-linear functions? The answer is the same as for KANs: B-splines, polynomials, RBFs, Wavelets, etc.
 
